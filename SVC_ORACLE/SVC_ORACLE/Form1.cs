@@ -252,7 +252,7 @@ namespace SVC_ORACLE
                 var result = OracleDB.RequestQueue(sql);
                 pbStatus.Maximum = result.Count;
 
-                string[] ExecutingObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "PACKAGE BODY", "TYPE" };
+                string[] ExecutingObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
                 while (result.Count > 0)
                 {
                     string owner = result.Dequeue();
