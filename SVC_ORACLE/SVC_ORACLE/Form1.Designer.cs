@@ -31,6 +31,8 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.gbConnection = new System.Windows.Forms.GroupBox();
+            this.txtSchemas = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.numAutoRefresh = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.txtPassword = new System.Windows.Forms.TextBox();
@@ -56,8 +58,6 @@
             this.btnFastRefresh = new System.Windows.Forms.Button();
             this.btnFullRefresh = new System.Windows.Forms.Button();
             this.fbPath = new System.Windows.Forms.FolderBrowserDialog();
-            this.txtSchemas = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.gbConnection.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numAutoRefresh)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bnProfiles)).BeginInit();
@@ -88,6 +88,22 @@
             this.gbConnection.TabIndex = 0;
             this.gbConnection.TabStop = false;
             this.gbConnection.Text = "Properties";
+            // 
+            // txtSchemas
+            // 
+            this.txtSchemas.Location = new System.Drawing.Point(89, 153);
+            this.txtSchemas.Name = "txtSchemas";
+            this.txtSchemas.Size = new System.Drawing.Size(100, 20);
+            this.txtSchemas.TabIndex = 13;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 156);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(78, 13);
+            this.label2.TabIndex = 12;
+            this.label2.Text = "Schemas, CSV";
             // 
             // numAutoRefresh
             // 
@@ -320,22 +336,6 @@
             this.btnFullRefresh.UseVisualStyleBackColor = true;
             this.btnFullRefresh.Click += new System.EventHandler(this.btnFullRefresh_Click);
             // 
-            // txtSchemas
-            // 
-            this.txtSchemas.Location = new System.Drawing.Point(89, 153);
-            this.txtSchemas.Name = "txtSchemas";
-            this.txtSchemas.Size = new System.Drawing.Size(100, 20);
-            this.txtSchemas.TabIndex = 13;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 156);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(78, 13);
-            this.label2.TabIndex = 12;
-            this.label2.Text = "Schemas, CSV";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -349,9 +349,10 @@
             this.Controls.Add(this.bnProfiles);
             this.Controls.Add(this.gbConnection);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "Oracle source uploader";
+            this.Text = "Oracle source exporter";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.gbConnection.ResumeLayout(false);
             this.gbConnection.PerformLayout();
