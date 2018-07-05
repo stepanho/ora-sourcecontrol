@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SVC_ORACLE", "SVC_ORACLE\SVC_ORACLE.csproj", "{8C4DACEB-AE20-4820-BA4D-5781C3CC1585}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SVC_ORACLE_INSTALL", "SVC_ORACLE_INSTALL\SVC_ORACLE_INSTALL.vdproj", "{6DC1BC68-7544-4983-BD9E-C6AD32AA7F30}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,8 @@ Global
 		{8C4DACEB-AE20-4820-BA4D-5781C3CC1585}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C4DACEB-AE20-4820-BA4D-5781C3CC1585}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C4DACEB-AE20-4820-BA4D-5781C3CC1585}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DC1BC68-7544-4983-BD9E-C6AD32AA7F30}.Debug|Any CPU.ActiveCfg = Debug
+		{6DC1BC68-7544-4983-BD9E-C6AD32AA7F30}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
