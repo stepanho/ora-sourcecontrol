@@ -32,7 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.gbConnection = new System.Windows.Forms.GroupBox();
             this.txtSchemas = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblSchemas = new System.Windows.Forms.Label();
             this.numAutoRefresh = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.txtPassword = new System.Windows.Forms.TextBox();
@@ -67,7 +67,7 @@
             // gbConnection
             // 
             this.gbConnection.Controls.Add(this.txtSchemas);
-            this.gbConnection.Controls.Add(this.label2);
+            this.gbConnection.Controls.Add(this.lblSchemas);
             this.gbConnection.Controls.Add(this.numAutoRefresh);
             this.gbConnection.Controls.Add(this.label1);
             this.gbConnection.Controls.Add(this.txtPassword);
@@ -96,14 +96,14 @@
             this.txtSchemas.Size = new System.Drawing.Size(100, 20);
             this.txtSchemas.TabIndex = 13;
             // 
-            // label2
+            // lblSchemas
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 156);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(78, 13);
-            this.label2.TabIndex = 12;
-            this.label2.Text = "Schemas, CSV";
+            this.lblSchemas.AutoSize = true;
+            this.lblSchemas.Location = new System.Drawing.Point(6, 156);
+            this.lblSchemas.Name = "lblSchemas";
+            this.lblSchemas.Size = new System.Drawing.Size(78, 13);
+            this.lblSchemas.TabIndex = 12;
+            this.lblSchemas.Text = "Schemas, CSV";
             // 
             // numAutoRefresh
             // 
@@ -394,7 +394,7 @@
         private System.Windows.Forms.Button btnFullRefresh;
         private System.Windows.Forms.FolderBrowserDialog fbPath;
         private System.Windows.Forms.TextBox txtSchemas;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblSchemas;
     }
 }
 
