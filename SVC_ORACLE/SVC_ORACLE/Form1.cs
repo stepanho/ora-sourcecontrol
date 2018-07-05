@@ -169,6 +169,16 @@ namespace SVC_ORACLE
             numAutoRefresh.Value = Convert.ToDecimal(profile["AutoRefresh"]);
             pbStatus.Value = 0;
         }
+
+        private void EnableAll(bool enable)
+        {
+            cbProfiles.Enabled = enable;
+            btnFastRefresh.Enabled = enable;
+            btnFullRefresh.Enabled = enable;
+            btnAdd.Enabled = enable;
+            btnDelete.Enabled = enable;
+            btnSave.Enabled = enable;
+        }      
         #endregion
 
         #region Event handlers
@@ -224,8 +234,8 @@ namespace SVC_ORACLE
             int ind = cbProfiles.SelectedIndex;
 
             if (ind >= 0)
-            {
-                SelectProfile(ind);
+            { 
+                    SelectProfile(ind);
                 var profile = new Config<string, string>(profiles[ind] + ".profile");
                 CreateDumps(profile["Path"], profile["Schemas"], new DateTime(1900, 1, 1));
                 profile["LastUpdate"] = OracleDB.GetServerNow();
@@ -237,14 +247,20 @@ namespace SVC_ORACLE
         {
             lock (this)
             {
-                int profileId = (int)(sender as Timer).Tag;
-                SelectProfile(profileId);
+            int profileId = (int)(sender as Timer).Tag;
+            SelectProfile(profileId);
                 var profile = new Config<string, string>(profiles[profileId] + ".profile");
                 CreateDumps(profile["Path"], profile["Schemas"], DateTime.ParseExact(profile["LastUpdate"], "yyyyMMddHHmmss", CultureInfo.InvariantCulture));
                 profile["LastUpdate"] = OracleDB.GetServerNow();
                 SelectProfile(profileId);
             }
         }
+
+            Invoke((System.Threading.ThreadStart)delegate
+            {
+                EnableAll(false);
+            });
+            EnableAll(true);
         #endregion
 
         #region Source upload
