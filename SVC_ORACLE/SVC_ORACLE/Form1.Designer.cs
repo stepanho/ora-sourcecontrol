@@ -54,10 +54,10 @@
             this.cbProfiles = new System.Windows.Forms.ToolStripComboBox();
             this.txtUpdated = new System.Windows.Forms.TextBox();
             this.lblUpdated = new System.Windows.Forms.Label();
-            this.pbStatus = new System.Windows.Forms.ProgressBar();
             this.btnFastRefresh = new System.Windows.Forms.Button();
             this.btnFullRefresh = new System.Windows.Forms.Button();
             this.fbPath = new System.Windows.Forms.FolderBrowserDialog();
+            this.pbStatus = new System.Windows.Forms.ProgressBar();
             this.gbConnection.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numAutoRefresh)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bnProfiles)).BeginInit();
@@ -307,15 +307,6 @@
             this.lblUpdated.TabIndex = 4;
             this.lblUpdated.Text = "Last update:";
             // 
-            // pbStatus
-            // 
-            this.pbStatus.Location = new System.Drawing.Point(21, 307);
-            this.pbStatus.Name = "pbStatus";
-            this.pbStatus.Size = new System.Drawing.Size(180, 23);
-            this.pbStatus.Step = 1;
-            this.pbStatus.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.pbStatus.TabIndex = 6;
-            // 
             // btnFastRefresh
             // 
             this.btnFastRefresh.Location = new System.Drawing.Point(21, 340);
@@ -335,6 +326,16 @@
             this.btnFullRefresh.Text = "Full Refresh";
             this.btnFullRefresh.UseVisualStyleBackColor = true;
             this.btnFullRefresh.Click += new System.EventHandler(this.btnFullRefresh_Click);
+            // 
+            // pbStatus
+            // 
+            this.pbStatus.Location = new System.Drawing.Point(21, 307);
+            this.pbStatus.Maximum = 1;
+            this.pbStatus.Name = "pbStatus";
+            this.pbStatus.Size = new System.Drawing.Size(180, 23);
+            this.pbStatus.Step = 1;
+            this.pbStatus.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.pbStatus.TabIndex = 6;
             // 
             // Form1
             // 
@@ -389,12 +390,12 @@
         private System.Windows.Forms.ToolStripComboBox cbProfiles;
         private System.Windows.Forms.TextBox txtUpdated;
         private System.Windows.Forms.Label lblUpdated;
-        private System.Windows.Forms.ProgressBar pbStatus;
         private System.Windows.Forms.Button btnFastRefresh;
         private System.Windows.Forms.Button btnFullRefresh;
         private System.Windows.Forms.FolderBrowserDialog fbPath;
         private System.Windows.Forms.TextBox txtSchemas;
         private System.Windows.Forms.Label lblSchemas;
+        private System.Windows.Forms.ProgressBar pbStatus;
     }
 }
 
