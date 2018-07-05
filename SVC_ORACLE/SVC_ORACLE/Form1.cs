@@ -268,7 +268,7 @@ namespace SVC_ORACLE
                         File.AppendAllText(
                             fileName,
                             GetRoutineSource(owner, type, name),
-                            Encoding.ASCII
+                            Encoding.UTF8
                          );
                     }
                     pbStatus.Value = pbStatus.Maximum - result.Count;
