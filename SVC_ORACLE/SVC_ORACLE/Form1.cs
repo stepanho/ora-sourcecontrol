@@ -12,7 +12,7 @@ namespace SVC_ORACLE
 {
     public partial class Form1 : Form
     {
-        Dictionary<string, Timer> timers = new Dictionary<string, Timer>();
+        Dictionary<int, Timer> timers = new Dictionary<int, Timer>();
         Config<int, string> profiles;
         int profilesCount = 0;
 
@@ -45,7 +45,7 @@ namespace SVC_ORACLE
                     {
                         var tmr = new Timer() { Enabled = true, Interval = timerValue * 1000, Tag = i };
                         tmr.Tick += Tmr_Tick;
-                        timers.Add(profiles[i], tmr);
+                        timers.Add(i, tmr);
                     }
                 }
                 profilesCount = i;
@@ -177,7 +177,6 @@ namespace SVC_ORACLE
             btnAdd.Enabled = true;
             btnDelete.Enabled = true;
             LoadProfiles();
-            timers = new Dictionary<string, Timer>();
         }
 
         private void btnPath_Click(object sender, EventArgs e)
