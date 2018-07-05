@@ -27,39 +27,46 @@ namespace SVC_ORACLE
         #region Profiles managing
         private void LoadProfiles()
         {
-            cbProfiles.DropDownStyle = ComboBoxStyle.DropDownList;
-            foreach (Timer item in timers.Values)
+            try
             {
-                item.Enabled = false;
-                item.Tick -= Tmr_Tick;
-                item.Dispose();
-            }
-            cbProfiles.Items.Clear();
-            timers.Clear();
-            profiles = new Config<int, string>("Profiles.config");
-            int i = -1;
-            while (profiles[++i] != null)
-            {
-                cbProfiles.Items.Add(profiles[i]);
-                int timerValue = Convert.ToInt32((new Config<string, string>(profiles[i] + ".profile"))["AutoRefresh"]);
-                if (timerValue > 0)
+                cbProfiles.DropDownStyle = ComboBoxStyle.DropDownList;
+                foreach (Timer item in timers.Values)
                 {
-                    var tmr = new Timer() { Enabled = true, Interval = timerValue * 1000, Tag = i };
-                    tmr.Tick += Tmr_Tick;
-                    timers.Add(profiles[i], tmr);
+                    item.Enabled = false;
+                    item.Tick -= Tmr_Tick;
+                    item.Dispose();
                 }
-            }
-            profilesCount = i;
+                cbProfiles.Items.Clear();
+                timers.Clear();
+                profiles = new Config<int, string>("Profiles.config");
+                int i = -1;
+                while (profiles[++i] != null)
+                {
+                    cbProfiles.Items.Add(profiles[i]);
+                    int timerValue = Convert.ToInt32((new Config<string, string>(profiles[i] + ".profile"))["AutoRefresh"]);
+                    if (timerValue > 0)
+                    {
+                        var tmr = new Timer() { Enabled = true, Interval = timerValue * 1000, Tag = i };
+                        tmr.Tick += Tmr_Tick;
+                        timers.Add(profiles[i], tmr);
+                    }
+                }
+                profilesCount = i;
 
-            txtHost.Text = "";
-            txtPort.Text = "";
-            txtSN.Text = "";
-            txtUser.Text = "";
-            txtPassword.Text = "";
-            fbPath.SelectedPath = "";
-            txtUpdated.Text = "";
-            txtSchemas.Text = "";
-            numAutoRefresh.Value = 0;
+                txtHost.Text = "";
+                txtPort.Text = "";
+                txtSN.Text = "";
+                txtUser.Text = "";
+                txtPassword.Text = "";
+                fbPath.SelectedPath = "";
+                txtUpdated.Text = "";
+                txtSchemas.Text = "";
+                numAutoRefresh.Value = 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(LogType.ERROR, ex, "LoadProfiles method");
+            }
         }
 
         private void SwitchConnection(string profileName)
@@ -101,45 +108,52 @@ namespace SVC_ORACLE
 
         private void SaveProfile()
         {
-            bool isNew = true;
-            for (int i = 0; i < profilesCount; i++)
+            try
             {
-                if (profiles[i] == cbProfiles.Text)
+                bool isNew = true;
+                for (int i = 0; i < profilesCount; i++)
                 {
-                    isNew = false;
+                    if (profiles[i] == cbProfiles.Text)
+                    {
+                        isNew = false;
+                    }
                 }
-            }
 
-            if (fbPath.SelectedPath == "")
+                if (fbPath.SelectedPath == "")
+                {
+                    MessageBox.Show("Destination path is not choosed");
+                    return;
+                }
+
+                if (isNew)
+                {
+                    profiles[profilesCount++] = cbProfiles.Text;
+                }
+                var profile = new Config<string, string>(cbProfiles.Text + ".profile");
+                profile["Host"] = txtHost.Text.Trim();
+                profile["Port"] = txtPort.Text.Trim();
+                profile["ServiceName"] = txtSN.Text.Trim();
+                profile["UserId"] = txtUser.Text.Trim();
+                profile["Password"] = txtPassword.Text.Trim();
+
+                SwitchConnection(cbProfiles.Text);
+                if (!OracleDB.CheckOnlineUsingOracle())
+                {
+                    MessageBox.Show("Cannot connect");
+                    return;
+                }
+
+                profile["Path"] = fbPath.SelectedPath;
+                profile["LastUpdate"] = profile["LastUpdate"] ?? "19000101000000";
+                profile["Schemas"] = txtSchemas.Text.Trim();
+                profile["AutoRefresh"] = numAutoRefresh.Value.ToString();
+
+                LoadProfiles();
+            }
+            catch (Exception ex)
             {
-                MessageBox.Show("Destination path is not choosed");
-                return;
+                Log.Write(LogType.ERROR, ex, "SaveProfile method");
             }
-
-            if (isNew)
-            {
-                profiles[profilesCount++] = cbProfiles.Text;
-            }
-            var profile = new Config<string, string>(cbProfiles.Text + ".profile");
-            profile["Host"] = txtHost.Text.Trim();
-            profile["Port"] = txtPort.Text.Trim();
-            profile["ServiceName"] = txtSN.Text.Trim();
-            profile["UserId"] = txtUser.Text.Trim();
-            profile["Password"] = txtPassword.Text.Trim();
-
-            SwitchConnection(cbProfiles.Text);
-            if (!OracleDB.CheckOnlineUsingOracle())
-            {
-                MessageBox.Show("Cannot connect");
-                return;
-            }
-
-            profile["Path"] = fbPath.SelectedPath;
-            profile["LastUpdate"] = profile["LastUpdate"] ?? "19000101000000";
-            profile["Schemas"] = txtSchemas.Text.Trim();
-            profile["AutoRefresh"] = numAutoRefresh.Value.ToString();
-
-            LoadProfiles();
         }
 
         private void SelectProfile(int index)
@@ -293,6 +307,11 @@ namespace SVC_ORACLE
                 AND TYPE = '{type}'
             ORDER BY OWNER, NAME, TYPE, LINE ";
             var result = OracleDB.RequestQueue(sql);
+
+            if (result == null || result.Count == 0)
+            {
+                Log.Write(LogType.ABNORMAL, null, "GetRoutineSource - return empty source (result: " + result == null ? "null)" : "Count=0)");
+            }
 
             StringBuilder sb = new StringBuilder(result.Count);
             while (result.Count > 0)
