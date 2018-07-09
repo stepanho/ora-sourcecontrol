@@ -281,11 +281,13 @@ namespace SVC_ORACLE
                 EnableAll(false);
             });
 
+            DateTime dateForUpdate = DateTime.ParseExact(profile["LastUpdate"], "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+            profile["LastUpdate"] = OracleDB.GetServerNow();
             e.Result = CreateDumps
             (
                 profile["Path"],
                 profile["Schemas"],
-                param.Item2 ? new DateTime(1900, 1, 1) : DateTime.ParseExact(profile["LastUpdate"], "yyyyMMddHHmmss", CultureInfo.InvariantCulture),
+                param.Item2 ? new DateTime(1900, 1, 1) : dateForUpdate,
                 param.Item1
             );
         }
@@ -302,9 +304,6 @@ namespace SVC_ORACLE
 
             pbStatus.Value = 0;
             pbStatus.Maximum = 1;
-            var profile = new Config<string, string>(profiles[result] + ".profile");
-            profile["LastUpdate"] = OracleDB.GetServerNow();
-
             EnableAll(true);
             SelectProfile(result);
         }
