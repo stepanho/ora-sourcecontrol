@@ -317,15 +317,19 @@ namespace SVC_ORACLE
             {
                 string schemaList = "'" + schemas.Replace(",", "', '") + "'";
                 Directory.CreateDirectory(rootPath);
+                string[] AllObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
+                string[] ExecutingObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
+
                 string sql = $@"
                 SELECT OWNER, OBJECT_NAME, OBJECT_TYPE
 	            FROM SYS.ALL_OBJECTS
 	            WHERE LAST_DDL_TIME >= TO_DATE('{changedAfter.ToString("yyyyMMddHHmmss")}', 'YYYYMMDDHH24MISS')
-	                AND OWNER IN ({schemaList}) ";
+	                AND OWNER IN ({schemaList})
+                    AND OBJECT_TYPE IN ({"'" + String.Join("', '", AllObjects) + "'"})
+                ORDER BY 1, 2, 3 ";
                 var result = OracleDB.RequestQueue(sql);
                 var objectCount = result.Count / 3;
-
-                string[] ExecutingObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
+                
                 while (result.Count > 0)
                 {
                     string owner = result.Dequeue();
@@ -338,12 +342,12 @@ namespace SVC_ORACLE
                         Directory.CreateDirectory(curPath);
                         string fileName = $@"{curPath}{name}.sql";
                         File.Delete(fileName);
-                        File.AppendAllText(
-                            fileName,
+                            File.AppendAllText(
+                                fileName,
                             GetRoutineSource(owner, type, name),
-                            Encoding.UTF8
-                         );
-                    }
+                                Encoding.UTF8
+                             );
+                        }
                     bw.ReportProgress(profileId, new int[] { objectCount - result.Count / 3, objectCount });
                     
                 }
