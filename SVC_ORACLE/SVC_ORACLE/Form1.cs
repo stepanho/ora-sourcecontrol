@@ -329,6 +329,11 @@ namespace SVC_ORACLE
                 var result = OracleDB.RequestQueue(sql);
                 var objectCount = result.Count / 3;
                 
+                if (objectCount > 0)
+                {
+                    Log.Write(LogType.NORMAL, null, $"Found {objectCount} objects for refresh, profile {profiles[profileId]}");
+                }
+
                 while (result.Count > 0)
                 {
                     string owner = result.Dequeue();
