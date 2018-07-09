@@ -259,7 +259,7 @@ namespace SVC_ORACLE
         private void Tmr_Tick(object sender, EventArgs e)
         {
             int profileId = (int)(sender as Timer).Tag;
-            SelectProfile(profileId);
+
             if (!bw.IsBusy)
             {
                 SelectProfile(profileId);
