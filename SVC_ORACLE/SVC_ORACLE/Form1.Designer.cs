@@ -85,7 +85,7 @@
             this.gbConnection.Location = new System.Drawing.Point(12, 37);
             this.gbConnection.Name = "gbConnection";
             this.gbConnection.Size = new System.Drawing.Size(207, 242);
-            this.gbConnection.TabIndex = 0;
+            this.gbConnection.TabIndex = 12;
             this.gbConnection.TabStop = false;
             this.gbConnection.Text = "Properties";
             // 
@@ -120,7 +120,7 @@
             0});
             this.numAutoRefresh.Name = "numAutoRefresh";
             this.numAutoRefresh.Size = new System.Drawing.Size(100, 20);
-            this.numAutoRefresh.TabIndex = 11;
+            this.numAutoRefresh.TabIndex = 17;
             // 
             // label1
             // 
@@ -128,7 +128,7 @@
             this.label1.Location = new System.Drawing.Point(6, 213);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(75, 13);
-            this.label1.TabIndex = 10;
+            this.label1.TabIndex = 16;
             this.label1.Text = "Auto refresh, s";
             // 
             // txtPassword
@@ -137,7 +137,7 @@
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '*';
             this.txtPassword.Size = new System.Drawing.Size(100, 20);
-            this.txtPassword.TabIndex = 9;
+            this.txtPassword.TabIndex = 11;
             // 
             // lblPassword
             // 
@@ -145,7 +145,7 @@
             this.lblPassword.Location = new System.Drawing.Point(6, 130);
             this.lblPassword.Name = "lblPassword";
             this.lblPassword.Size = new System.Drawing.Size(53, 13);
-            this.lblPassword.TabIndex = 8;
+            this.lblPassword.TabIndex = 10;
             this.lblPassword.Text = "Password";
             // 
             // txtUser
@@ -153,7 +153,7 @@
             this.txtUser.Location = new System.Drawing.Point(89, 101);
             this.txtUser.Name = "txtUser";
             this.txtUser.Size = new System.Drawing.Size(100, 20);
-            this.txtUser.TabIndex = 7;
+            this.txtUser.TabIndex = 9;
             // 
             // lblUser
             // 
@@ -161,7 +161,7 @@
             this.lblUser.Location = new System.Drawing.Point(6, 104);
             this.lblUser.Name = "lblUser";
             this.lblUser.Size = new System.Drawing.Size(29, 13);
-            this.lblUser.TabIndex = 6;
+            this.lblUser.TabIndex = 8;
             this.lblUser.Text = "User";
             // 
             // txtSN
@@ -169,14 +169,14 @@
             this.txtSN.Location = new System.Drawing.Point(89, 75);
             this.txtSN.Name = "txtSN";
             this.txtSN.Size = new System.Drawing.Size(100, 20);
-            this.txtSN.TabIndex = 5;
+            this.txtSN.TabIndex = 7;
             // 
             // btnPath
             // 
             this.btnPath.Location = new System.Drawing.Point(114, 182);
             this.btnPath.Name = "btnPath";
             this.btnPath.Size = new System.Drawing.Size(75, 23);
-            this.btnPath.TabIndex = 3;
+            this.btnPath.TabIndex = 15;
             this.btnPath.Text = "Browse";
             this.btnPath.UseVisualStyleBackColor = true;
             this.btnPath.Click += new System.EventHandler(this.btnPath_Click);
@@ -187,7 +187,7 @@
             this.lblPath.Location = new System.Drawing.Point(6, 187);
             this.lblPath.Name = "lblPath";
             this.lblPath.Size = new System.Drawing.Size(89, 13);
-            this.lblPath.TabIndex = 2;
+            this.lblPath.TabIndex = 14;
             this.lblPath.Text = "Destination folder";
             // 
             // lblSN
@@ -196,7 +196,7 @@
             this.lblSN.Location = new System.Drawing.Point(6, 78);
             this.lblSN.Name = "lblSN";
             this.lblSN.Size = new System.Drawing.Size(72, 13);
-            this.lblSN.TabIndex = 4;
+            this.lblSN.TabIndex = 6;
             this.lblSN.Text = "Service name";
             // 
             // txtPort
@@ -204,7 +204,7 @@
             this.txtPort.Location = new System.Drawing.Point(89, 49);
             this.txtPort.Name = "txtPort";
             this.txtPort.Size = new System.Drawing.Size(100, 20);
-            this.txtPort.TabIndex = 3;
+            this.txtPort.TabIndex = 5;
             // 
             // lblPort
             // 
@@ -212,7 +212,7 @@
             this.lblPort.Location = new System.Drawing.Point(6, 52);
             this.lblPort.Name = "lblPort";
             this.lblPort.Size = new System.Drawing.Size(26, 13);
-            this.lblPort.TabIndex = 2;
+            this.lblPort.TabIndex = 4;
             this.lblPort.Text = "Port";
             // 
             // txtHost
@@ -220,7 +220,7 @@
             this.txtHost.Location = new System.Drawing.Point(89, 23);
             this.txtHost.Name = "txtHost";
             this.txtHost.Size = new System.Drawing.Size(100, 20);
-            this.txtHost.TabIndex = 1;
+            this.txtHost.TabIndex = 3;
             // 
             // lblHost
             // 
@@ -228,7 +228,7 @@
             this.lblHost.Location = new System.Drawing.Point(6, 26);
             this.lblHost.Name = "lblHost";
             this.lblHost.Size = new System.Drawing.Size(29, 13);
-            this.lblHost.TabIndex = 0;
+            this.lblHost.TabIndex = 2;
             this.lblHost.Text = "Host";
             // 
             // bnProfiles
@@ -296,7 +296,7 @@
             this.txtUpdated.Name = "txtUpdated";
             this.txtUpdated.ReadOnly = true;
             this.txtUpdated.Size = new System.Drawing.Size(117, 20);
-            this.txtUpdated.TabIndex = 5;
+            this.txtUpdated.TabIndex = 19;
             // 
             // lblUpdated
             // 
@@ -304,7 +304,7 @@
             this.lblUpdated.Location = new System.Drawing.Point(18, 288);
             this.lblUpdated.Name = "lblUpdated";
             this.lblUpdated.Size = new System.Drawing.Size(66, 13);
-            this.lblUpdated.TabIndex = 4;
+            this.lblUpdated.TabIndex = 18;
             this.lblUpdated.Text = "Last update:";
             // 
             // btnFastRefresh
@@ -312,7 +312,7 @@
             this.btnFastRefresh.Location = new System.Drawing.Point(21, 340);
             this.btnFastRefresh.Name = "btnFastRefresh";
             this.btnFastRefresh.Size = new System.Drawing.Size(75, 23);
-            this.btnFastRefresh.TabIndex = 7;
+            this.btnFastRefresh.TabIndex = 21;
             this.btnFastRefresh.Text = "Fast Refresh";
             this.btnFastRefresh.UseVisualStyleBackColor = true;
             this.btnFastRefresh.Click += new System.EventHandler(this.btnFastRefresh_Click);
@@ -322,7 +322,7 @@
             this.btnFullRefresh.Location = new System.Drawing.Point(126, 340);
             this.btnFullRefresh.Name = "btnFullRefresh";
             this.btnFullRefresh.Size = new System.Drawing.Size(75, 23);
-            this.btnFullRefresh.TabIndex = 8;
+            this.btnFullRefresh.TabIndex = 22;
             this.btnFullRefresh.Text = "Full Refresh";
             this.btnFullRefresh.UseVisualStyleBackColor = true;
             this.btnFullRefresh.Click += new System.EventHandler(this.btnFullRefresh_Click);
@@ -335,7 +335,7 @@
             this.pbStatus.Size = new System.Drawing.Size(180, 23);
             this.pbStatus.Step = 1;
             this.pbStatus.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.pbStatus.TabIndex = 6;
+            this.pbStatus.TabIndex = 20;
             // 
             // Form1
             // 
