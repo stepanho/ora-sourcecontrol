@@ -342,12 +342,16 @@ namespace SVC_ORACLE
                         Directory.CreateDirectory(curPath);
                         string fileName = $@"{curPath}{name}.sql";
                         File.Delete(fileName);
+                        string src = GetRoutineSource(owner, type, name);
+                        if (src != null)
+                        {
                             File.AppendAllText(
                                 fileName,
-                            GetRoutineSource(owner, type, name),
+                                src,
                                 Encoding.UTF8
                              );
                         }
+                    }
                     bw.ReportProgress(profileId, new int[] { objectCount - result.Count / 3, objectCount });
                     
                 }
@@ -366,8 +370,9 @@ namespace SVC_ORACLE
             SELECT CASE WHEN LINE = 1 THEN
             	'CREATE OR REPLACE ' || REPLACE(UPPER(REPLACE(TEXT, CHR(34))), NAME, CHR(34) || OWNER || CHR(34) || '.' || CHR(34) || NAME || CHR(34))
             	ELSE TEXT END SRC
-            FROM SYS.ALL_SOURCE
-            WHERE OWNER = '{schema}'
+            FROM SYS.ALL_SOURCE A
+            WHERE NOT EXISTS (SELECT 'X' FROM SYS.ALL_SOURCE WHERE A.OWNER = OWNER AND A.TYPE = TYPE AND A.NAME = NAME AND LINE = 1 AND INSTR(TEXT, 'wrapped') > 0)
+                AND OWNER = '{schema}'
                 AND NAME = '{name}'
                 AND TYPE = '{type}'
             ORDER BY OWNER, NAME, TYPE, LINE ";
