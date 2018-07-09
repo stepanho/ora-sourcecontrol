@@ -335,7 +335,7 @@ namespace SVC_ORACLE
                     string owner = result.Dequeue();
                     string name = result.Dequeue();
                     string type = result.Dequeue();
-                    string curPath = $@"{rootPath}/{owner}/{type}/";
+                    string curPath = $"{rootPath}\\{owner}\\{type}\\";
 
                     if (ExecutingObjects.Contains(type))
                     {
@@ -380,15 +380,18 @@ namespace SVC_ORACLE
 
             if (result == null || result.Count == 0)
             {
-                Log.Write(LogType.ABNORMAL, null, "GetRoutineSource - return empty source (result: " + (result == null ? "null)" : "Count=0)"));
+                Log.Write(LogType.ABNORMAL, null, "GetRoutineSource - return empty source (result: " + (result == null ? "null)" : "Count=0)" + $" Owner={Owner}, Type={type}, Name={name}"));
+                return null;
             }
-
-            StringBuilder sb = new StringBuilder(result.Count);
-            while (result.Count > 0)
+            else
             {
-                sb.Append(result.Dequeue());
+                StringBuilder sb = new StringBuilder(result.Count);
+                while (result.Count > 0)
+                {
+                    sb.Append(result.Dequeue());
+                }
+                return sb.ToString();
             }
-            return sb.ToString();
         } 
         #endregion
     }
