@@ -301,6 +301,7 @@ namespace SVC_ORACLE
 
         private void Bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            bool isNonEmpty = pbStatus.Value > 0;
             pbStatus.Value = 0;
             pbStatus.Maximum = 1;
             EnableAll(true);
@@ -309,7 +310,10 @@ namespace SVC_ORACLE
             {
                 var result = (int)e.Result;
                 SelectProfile(result);
-                Log.Write(LogType.NORMAL, null, $"Refreshing completed, profile: {profiles[result]}");
+                if (isNonEmpty)
+                {
+                    Log.Write(LogType.NORMAL, null, $"Refreshing completed, profile: {profiles[result]}");
+                }
             }
             else
             {
