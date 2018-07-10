@@ -394,7 +394,7 @@ namespace SVC_ORACLE
                 {
                     sb.Append(result.Dequeue());
                 }
-                return sb.ToString();
+                return sb.ToString().Replace("\n", "\r\n").Replace("\0", "");
             }
         } 
         #endregion
