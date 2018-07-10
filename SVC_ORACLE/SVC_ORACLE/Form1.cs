@@ -282,7 +282,7 @@ namespace SVC_ORACLE
             });
 
             DateTime dateForUpdate = DateTime.ParseExact(profile["LastUpdate"], "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
-            profile["LastUpdate"] = OracleDB.GetServerNow();
+            string now = OracleDB.GetServerNow();
             e.Result = CreateDumps
             (
                 profile["Path"],
@@ -290,6 +290,7 @@ namespace SVC_ORACLE
                 param.Item2 ? new DateTime(1900, 1, 1) : dateForUpdate,
                 param.Item1
             );
+            profile["LastUpdate"] = now;
         }
 
         private void Bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -300,72 +301,71 @@ namespace SVC_ORACLE
 
         private void Bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            var result = (int)e.Result;
-
             pbStatus.Value = 0;
             pbStatus.Maximum = 1;
             EnableAll(true);
-            SelectProfile(result);
+
+            if (e.Error == null)
+            {
+                var result = (int)e.Result;
+                SelectProfile(result);
+            }
+            else
+            {
+                Log.Write(LogType.ERROR, e.Error, "Error during executing Bw_DoWork");
+            }
         }
         #endregion
 
         #region Source upload
         public int CreateDumps(string rootPath, string schemas, DateTime changedAfter, int profileId)
         {
-            try
+            string schemaList = "'" + schemas.Replace(",", "', '") + "'";
+            Directory.CreateDirectory(rootPath);
+            string[] AllObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
+            string[] ExecutingObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
+
+            string sql = $@"
+            SELECT OWNER, OBJECT_NAME, OBJECT_TYPE
+	        FROM SYS.ALL_OBJECTS
+	        WHERE LAST_DDL_TIME >= TO_DATE('{changedAfter.ToString("yyyyMMddHHmmss")}', 'YYYYMMDDHH24MISS')
+	            AND OWNER IN ({schemaList})
+                AND OBJECT_TYPE IN ({"'" + String.Join("', '", AllObjects) + "'"})
+            ORDER BY 1, 2, 3 ";
+            var result = OracleDB.RequestQueue(sql);
+            var objectCount = result.Count / 3;
+            
+            if (objectCount > 0)
             {
-                string schemaList = "'" + schemas.Replace(",", "', '") + "'";
-                Directory.CreateDirectory(rootPath);
-                string[] AllObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
-                string[] ExecutingObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
+                Log.Write(LogType.NORMAL, null, $"Found {objectCount} objects for refresh, profile {profiles[profileId]}");
+            }
 
-                string sql = $@"
-                SELECT OWNER, OBJECT_NAME, OBJECT_TYPE
-	            FROM SYS.ALL_OBJECTS
-	            WHERE LAST_DDL_TIME >= TO_DATE('{changedAfter.ToString("yyyyMMddHHmmss")}', 'YYYYMMDDHH24MISS')
-	                AND OWNER IN ({schemaList})
-                    AND OBJECT_TYPE IN ({"'" + String.Join("', '", AllObjects) + "'"})
-                ORDER BY 1, 2, 3 ";
-                var result = OracleDB.RequestQueue(sql);
-                var objectCount = result.Count / 3;
-                
-                if (objectCount > 0)
+            while (result.Count > 0)
+            {
+                string owner = result.Dequeue();
+                string name = result.Dequeue();
+                string type = result.Dequeue();
+                string curPath = $"{rootPath}\\{owner}\\{type}\\";
+
+                if (ExecutingObjects.Contains(type))
                 {
-                    Log.Write(LogType.NORMAL, null, $"Found {objectCount} objects for refresh, profile {profiles[profileId]}");
-                }
-
-                while (result.Count > 0)
-                {
-                    string owner = result.Dequeue();
-                    string name = result.Dequeue();
-                    string type = result.Dequeue();
-                    string curPath = $"{rootPath}\\{owner}\\{type}\\";
-
-                    if (ExecutingObjects.Contains(type))
+                    Directory.CreateDirectory(curPath);
+                    string fileName = $@"{curPath}{name}.sql";
+                    File.Delete(fileName);
+                    string src = GetRoutineSource(owner, type, name);
+                    if (src != null)
                     {
-                        Directory.CreateDirectory(curPath);
-                        string fileName = $@"{curPath}{name}.sql";
-                        File.Delete(fileName);
-                        string src = GetRoutineSource(owner, type, name);
-                        if (src != null)
-                        {
-                            File.AppendAllText(
-                                fileName,
-                                src,
-                                Encoding.UTF8
-                             );
-                        }
+                        File.AppendAllText(
+                            fileName,
+                            src,
+                            Encoding.UTF8
+                         );
                     }
-                    bw.ReportProgress(profileId, new int[] { objectCount - result.Count / 3, objectCount });
-                    
                 }
-                return profileId;
+                bw.ReportProgress(profileId, new int[] { objectCount - result.Count / 3, objectCount });
+                
             }
-            catch (Exception ex)
-            {
-                Log.Write(LogType.ERROR, ex, "CreateDumps");
-                return profileId;
-            }
+            return profileId;
         }
 
         public string GetRoutineSource(string schema, string type, string name)
