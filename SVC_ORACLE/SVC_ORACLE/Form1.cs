@@ -309,6 +309,7 @@ namespace SVC_ORACLE
             {
                 var result = (int)e.Result;
                 SelectProfile(result);
+                Log.Write(LogType.NORMAL, null, $"Refreshing completed, profile: {profiles[result]}");
             }
             else
             {
@@ -384,7 +385,7 @@ namespace SVC_ORACLE
 
             if (result == null || result.Count == 0)
             {
-                Log.Write(LogType.ABNORMAL, null, "GetRoutineSource - return empty source (result: " + (result == null ? "null)" : "Count=0)" + $" Owner={Owner}, Type={type}, Name={name}"));
+                Log.Write(LogType.ABNORMAL, null, "GetRoutineSource - return empty source (result: " + (result == null ? "null)" : "Count=0)" + $" Owner={schema}, Type={type}, Name={name}"));
                 return null;
             }
             else
