@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Utils;
+using LibGit2Sharp;
+using LibGit2Sharp.Handlers;
 
 namespace SVC_ORACLE
 {
@@ -401,7 +403,62 @@ namespace SVC_ORACLE
                 }
                 return sb.ToString().Replace("\n", "\r\n").Replace("\0", "");
             }
-        } 
+        }
         #endregion
+
+        private void GitPull(int profileId)
+        {
+            var profile = new Config<string, string>(profiles[profileId] + ".profile");
+
+            using (var repo = new Repository(Repository.Discover(profile["Path"])))
+            {
+                PullOptions options = new PullOptions();
+
+                string username = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+                username = username.Substring(username.IndexOf("\\") + 1); //remove domain
+
+                string pathToSsh = $@"C:\Users\{username}\.ssh";
+
+                Credentials cred = new SshUserKeyCredentials()
+                {
+                    Username = System.Security.Principal.WindowsIdentity.GetCurrent().Name,
+                    Passphrase = string.Empty,
+                    PublicKey = Path.Combine(pathToSsh, "id_rsa.pub"),
+                    PrivateKey = Path.Combine(pathToSsh, "id_rsa"),
+                };
+
+                var signature = new Signature(username, "s.logvin@mail.com", new DateTimeOffset(DateTime.Now));
+
+                var res1 = repo.Stashes.Add(signature, StashModifiers.IncludeUntracked);
+
+                options.FetchOptions = new FetchOptions()
+                {
+                    CredentialsProvider = new CredentialsHandler(
+                    (url, usernameFromUrl, types) =>
+                        new SshUserKeyCredentials()
+                        {
+                            Username = "git",
+                            Passphrase = string.Empty,
+                            PublicKey = Path.Combine(pathToSsh, "id_rsa.pub"),
+                            PrivateKey = Path.Combine(pathToSsh, "id_rsa"),
+                        }
+                    )
+                };
+                var res2 = Commands.Pull(repo, signature, options);
+
+                var res3 = repo.Stashes.Pop(0);
+
+                MessageBox.Show("\n" + res2.Status + "\n" + res3);
+            }
+        }
+
+        private void btnPull_Click(object sender, EventArgs e)
+        {
+            int ind = cbProfiles.SelectedIndex;
+            if (ind >= 0)
+            {
+                GitPull(ind);
+            }
+        }
     }
 }
