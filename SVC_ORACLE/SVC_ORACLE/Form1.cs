@@ -406,49 +406,66 @@ namespace SVC_ORACLE
         }
         #endregion
 
-        private void GitPull(int profileId)
+        private void GitPullWithStash(int profileId)
         {
             var profile = new Config<string, string>(profiles[profileId] + ".profile");
 
             using (var repo = new Repository(Repository.Discover(profile["Path"])))
             {
-                PullOptions options = new PullOptions();
-
-                string username = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-                username = username.Substring(username.IndexOf("\\") + 1); //remove domain
-
-                string pathToSsh = $@"C:\Users\{username}\.ssh";
-
-                Credentials cred = new SshUserKeyCredentials()
+                try
                 {
-                    Username = System.Security.Principal.WindowsIdentity.GetCurrent().Name,
-                    Passphrase = string.Empty,
-                    PublicKey = Path.Combine(pathToSsh, "id_rsa.pub"),
-                    PrivateKey = Path.Combine(pathToSsh, "id_rsa"),
-                };
+                    PullOptions options = new PullOptions();
 
-                var signature = new Signature(username, "s.logvin@mail.com", new DateTimeOffset(DateTime.Now));
+                    string username = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+                    username = username.Substring(username.IndexOf("\\") + 1); //remove domain
 
-                var res1 = repo.Stashes.Add(signature, StashModifiers.IncludeUntracked);
+                    string pathToSsh = $@"C:\Users\{username}\.ssh";
 
-                options.FetchOptions = new FetchOptions()
+                    Credentials cred = new SshUserKeyCredentials()
+                    {
+                        Username = System.Security.Principal.WindowsIdentity.GetCurrent().Name,
+                        Passphrase = string.Empty,
+                        PublicKey = Path.Combine(pathToSsh, "id_rsa.pub"),
+                        PrivateKey = Path.Combine(pathToSsh, "id_rsa"),
+                    };
+
+                    var signature = new Signature(username, username + "@mail.ru", new DateTimeOffset(DateTime.Now));
+
+                    var res1 = repo.Stashes.Add(signature, StashModifiers.IncludeUntracked);
+
+                    options.FetchOptions = new FetchOptions()
+                    {
+                        CredentialsProvider = new CredentialsHandler(
+                        (url, usernameFromUrl, types) =>
+                            new SshUserKeyCredentials()
+                            {
+                                Username = "git",
+                                Passphrase = string.Empty,
+                                PublicKey = Path.Combine(pathToSsh, "id_rsa.pub"),
+                                PrivateKey = Path.Combine(pathToSsh, "id_rsa"),
+                            }
+                        )
+                    };
+                    var res2 = Commands.Pull(repo, signature, options);
+
+                    if (res2.Commit != null)
+                    {
+                        Log.Write(LogType.NORMAL, null, "Git pull succeeded, result: " + res2.Status);
+                    }
+                    else
+                    {
+                        Log.Write(LogType.ABNORMAL, null, "Git pull failed, result: " + res2.Status);
+                    }
+
+                    if (res1 != null)
+                    {
+                        var res3 = repo.Stashes.Pop(0);
+                    }
+                }
+                catch (Exception ex)
                 {
-                    CredentialsProvider = new CredentialsHandler(
-                    (url, usernameFromUrl, types) =>
-                        new SshUserKeyCredentials()
-                        {
-                            Username = "git",
-                            Passphrase = string.Empty,
-                            PublicKey = Path.Combine(pathToSsh, "id_rsa.pub"),
-                            PrivateKey = Path.Combine(pathToSsh, "id_rsa"),
-                        }
-                    )
-                };
-                var res2 = Commands.Pull(repo, signature, options);
-
-                var res3 = repo.Stashes.Pop(0);
-
-                MessageBox.Show("\n" + res2.Status + "\n" + res3);
+                    Log.Write(LogType.ERROR, ex, "Git pull error");
+                }
             }
         }
 
@@ -457,7 +474,7 @@ namespace SVC_ORACLE
             int ind = cbProfiles.SelectedIndex;
             if (ind >= 0)
             {
-                GitPull(ind);
+                GitPullWithStash(ind);
             }
         }
     }
