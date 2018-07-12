@@ -419,23 +419,8 @@ namespace SVC_ORACLE
                 try
                 {
                     PullOptions options = new PullOptions();
-
-                    string username = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-                    username = username.Substring(username.IndexOf("\\") + 1); //remove domain
-
-                    string pathToSsh = $@"C:\Users\{username}\.ssh";
-
-                    Credentials cred = new SshUserKeyCredentials()
-                    {
-                        Username = System.Security.Principal.WindowsIdentity.GetCurrent().Name,
-                        Passphrase = string.Empty,
-                        PublicKey = Path.Combine(pathToSsh, "id_rsa.pub"),
-                        PrivateKey = Path.Combine(pathToSsh, "id_rsa"),
-                    };
-
-                    var signature = new Signature(username, username + "@mail.ru", new DateTimeOffset(DateTime.Now));
-
-                    var res1 = repo.Stashes.Add(signature, StashModifiers.IncludeUntracked);
+                    var signature = new Signature(git["Name"], git["Email"], new DateTimeOffset(DateTime.Now));
+                    var stash = repo.Stashes.Add(signature, StashModifiers.IncludeUntracked);
 
                     options.FetchOptions = new FetchOptions()
                     {
@@ -443,25 +428,26 @@ namespace SVC_ORACLE
                         (url, usernameFromUrl, types) =>
                             new SshUserKeyCredentials()
                             {
-                                Username = "git",
-                                Passphrase = string.Empty,
-                                PublicKey = Path.Combine(pathToSsh, "id_rsa.pub"),
-                                PrivateKey = Path.Combine(pathToSsh, "id_rsa"),
+                                Username = git["GitServerUsername"],
+                                Passphrase = git["SshPasshrase"],
+                                PublicKey = git["SshPublicPath"],
+                                PrivateKey = git["SshPrivatePath"],
                             }
                         )
                     };
-                    var res2 = Commands.Pull(repo, signature, options);
 
-                    if (res2.Commit != null)
+                    var pullResult = Commands.Pull(repo, signature, options);
+
+                    if (pullResult.Commit != null || pullResult.Status.ToString() == "UpToDate")
                     {
-                        Log.Write(LogType.NORMAL, null, "Git pull succeeded, result: " + res2.Status);
+                        Log.Write(LogType.NORMAL, null, "Git pull succeeded, result: " + pullResult.Status);
                     }
                     else
                     {
-                        Log.Write(LogType.ABNORMAL, null, "Git pull failed, result: " + res2.Status);
+                        Log.Write(LogType.ABNORMAL, null, "Git pull failed, result: " + pullResult.Status);
                     }
 
-                    if (res1 != null)
+                    if (stash != null)
                     {
                         var res3 = repo.Stashes.Pop(0);
                     }
