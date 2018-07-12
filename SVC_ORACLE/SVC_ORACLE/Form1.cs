@@ -318,6 +318,7 @@ namespace SVC_ORACLE
                 SelectProfile(result);
                 if (isNonEmpty)
                 {
+                    GitPullWithStash(result);
                     Log.Write(LogType.NORMAL, null, $"Refreshing completed, profile: {profiles[result]}");
                 }
             }
