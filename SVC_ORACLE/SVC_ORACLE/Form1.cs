@@ -17,6 +17,8 @@ namespace SVC_ORACLE
         Dictionary<int, Timer> timers = new Dictionary<int, Timer>();
         BackgroundWorker bw;
         Config<int, string> profiles;
+        Config<string, string> git;
+
         int profilesCount = 0;
 
         public Form1()
@@ -39,6 +41,8 @@ namespace SVC_ORACLE
                 cbProfiles.Items.Clear();
                 timers.Clear();
                 profiles = new Config<int, string>("Profiles.config");
+                GitInit();
+
                 int i = -1;
                 while (profiles[++i] != null)
                 {
@@ -467,6 +471,21 @@ namespace SVC_ORACLE
                     Log.Write(LogType.ERROR, ex, "Git pull error");
                 }
             }
+        }
+
+        private void GitInit()
+        {
+            string username = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+            username = username.Substring(username.IndexOf('\\') + 1); //remove domain name
+
+            git = new Config<string, string>("Git.config");
+            git["SshPublicPath"] = git["SshPublicPath"] ?? $@"C:\Users\{username}\.ssh\id_rsa.pub";
+            git["SshPrivatePath"] = git["SshPrivatePath"] ?? $@"C:\Users\{username}\.ssh\id_rsa";
+            git["SshPasshrase"] = git["SshPasshrase"] ?? "";
+            git["Name"] = git["Name"] ?? "Source Exporter";
+            git["Email"] = git["Email"] ?? "noreply@git.com";
+            git["GitServerUsername"] = git["GitServerUsername"] ?? "git";
+
         }
 
         private void btnPull_Click(object sender, EventArgs e)
