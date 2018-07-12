@@ -440,11 +440,11 @@ namespace SVC_ORACLE
 
                     if (pullResult.Commit != null || pullResult.Status.ToString() == "UpToDate")
                     {
-                        Log.Write(LogType.NORMAL, null, "Git pull succeeded, result: " + pullResult.Status);
+                        Log.Write(LogType.NORMAL, null, $"Git pull succeeded, result: {pullResult.Status}, profile: {profiles[profileId]}");
                     }
                     else
                     {
-                        Log.Write(LogType.ABNORMAL, null, "Git pull failed, result: " + pullResult.Status);
+                        Log.Write(LogType.ABNORMAL, null, $"Git pull failed, result: {pullResult.Status}, profile: {profiles[profileId]}");
                     }
 
                     if (stash != null)
