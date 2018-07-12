@@ -232,7 +232,7 @@ namespace SVC_ORACLE
                 }
                 else
                 {
-                    Log.Write(LogType.ABNORMAL, null, "Cannot start fast refresh due to process busy. Profile " + profiles[ind]);
+                    Log.Write(LogType.ABNORMAL, null, $"Cannot start fast refresh due to process busy. Profile: {profiles[ind]}, Blocking profile: {profiles[cbProfiles.SelectedIndex]}");
                 }
             }
 
@@ -251,7 +251,7 @@ namespace SVC_ORACLE
                 }
                 else
                 {
-                    Log.Write(LogType.ABNORMAL, null, "Cannot start full refresh due to process busy. Profile " + profiles[ind]);
+                    Log.Write(LogType.ABNORMAL, null, $"Cannot start full refresh due to process busy. Profile: {profiles[ind]}, Blocking profile: {profiles[cbProfiles.SelectedIndex]}");
                 }
             }
         }
@@ -267,7 +267,7 @@ namespace SVC_ORACLE
             }
             else
             {
-                Log.Write(LogType.ABNORMAL, null, "Timer cannot start job due to process busy. Profile " + profiles[profileId]);
+                Log.Write(LogType.ABNORMAL, null, $"Timer cannot start job due to process busy. Profile: {profiles[profileId]}, Blocking profile: {profiles[cbProfiles.SelectedIndex]}");
             }
         }
 
