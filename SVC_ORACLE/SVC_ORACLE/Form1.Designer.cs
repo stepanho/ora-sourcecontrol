@@ -58,7 +58,6 @@
             this.btnFullRefresh = new System.Windows.Forms.Button();
             this.fbPath = new System.Windows.Forms.FolderBrowserDialog();
             this.pbStatus = new System.Windows.Forms.ProgressBar();
-            this.btnPull = new System.Windows.Forms.Button();
             this.gbConnection.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numAutoRefresh)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bnProfiles)).BeginInit();
@@ -67,7 +66,6 @@
             // 
             // gbConnection
             // 
-            this.gbConnection.Controls.Add(this.btnPull);
             this.gbConnection.Controls.Add(this.txtSchemas);
             this.gbConnection.Controls.Add(this.lblSchemas);
             this.gbConnection.Controls.Add(this.numAutoRefresh);
@@ -339,16 +337,6 @@
             this.pbStatus.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.pbStatus.TabIndex = 20;
             // 
-            // btnPull
-            // 
-            this.btnPull.Location = new System.Drawing.Point(190, 127);
-            this.btnPull.Name = "btnPull";
-            this.btnPull.Size = new System.Drawing.Size(17, 23);
-            this.btnPull.TabIndex = 18;
-            this.btnPull.Text = "v";
-            this.btnPull.UseVisualStyleBackColor = true;
-            this.btnPull.Click += new System.EventHandler(this.btnPull_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -408,7 +396,6 @@
         private System.Windows.Forms.TextBox txtSchemas;
         private System.Windows.Forms.Label lblSchemas;
         private System.Windows.Forms.ProgressBar pbStatus;
-        private System.Windows.Forms.Button btnPull;
     }
 }
 
