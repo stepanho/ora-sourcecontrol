@@ -296,7 +296,7 @@ namespace SVC_ORACLE
                 param.Item2 ? new DateTime(1900, 1, 1) : dateForUpdate,
                 param.Item1
             );
-            profile["LastUpdate"] = now;
+            profile["LastUpdate"] = now ?? profile["LastUpdate"];
             if (IsNeedPull(param.Item1))
             {
                 GitPullWithStash(param.Item1);
