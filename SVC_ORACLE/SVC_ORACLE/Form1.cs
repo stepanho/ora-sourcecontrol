@@ -185,7 +185,7 @@ namespace SVC_ORACLE
             btnAdd.Enabled = enable;
             btnDelete.Enabled = enable;
             btnSave.Enabled = enable;
-        }      
+        }
         #endregion
 
         #region Event handlers
@@ -249,7 +249,7 @@ namespace SVC_ORACLE
             int ind = cbProfiles.SelectedIndex;
 
             if (ind >= 0)
-            { 
+            {
                 if (!bw.IsBusy)
                 {
                     SelectProfile(ind);
@@ -297,6 +297,10 @@ namespace SVC_ORACLE
                 param.Item1
             );
             profile["LastUpdate"] = now;
+            if (IsNeedPull(param.Item1))
+            {
+                GitPullWithStash(param.Item1);
+            }
         }
 
         private void Bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -318,7 +322,6 @@ namespace SVC_ORACLE
                 SelectProfile(result);
                 if (isNonEmpty)
                 {
-                    GitPullWithStash(result);
                     Log.Write(LogType.NORMAL, null, $"Refreshing completed, profile: {profiles[result]}");
                 }
             }
@@ -346,7 +349,7 @@ namespace SVC_ORACLE
             ORDER BY 1, 2, 3 ";
             var result = OracleDB.RequestQueue(sql);
             var objectCount = result.Count / 3;
-            
+
             if (objectCount > 0)
             {
                 Log.Write(LogType.NORMAL, null, $"Found {objectCount} objects for refresh, profile {profiles[profileId]}");
@@ -375,7 +378,7 @@ namespace SVC_ORACLE
                     }
                 }
                 bw.ReportProgress(profileId, new int[] { objectCount - result.Count / 3, objectCount });
-                
+
             }
             return profileId;
         }
@@ -410,6 +413,21 @@ namespace SVC_ORACLE
             }
         }
         #endregion
+
+        #region Git
+        private void GitInit()
+        {
+            string username = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+            username = username.Substring(username.IndexOf('\\') + 1); //remove domain name
+
+            git = new Config<string, string>("Git.config");
+            git["SshPublicPath"] = git["SshPublicPath"] ?? $@"C:\Users\{username}\.ssh\id_rsa.pub";
+            git["SshPrivatePath"] = git["SshPrivatePath"] ?? $@"C:\Users\{username}\.ssh\id_rsa";
+            git["SshPasshrase"] = git["SshPasshrase"] ?? "";
+            git["Name"] = git["Name"] ?? "Source Exporter";
+            git["Email"] = git["Email"] ?? "noreply@git.com";
+            git["GitServerUsername"] = git["GitServerUsername"] ?? "git";
+        }
 
         private void GitPullWithStash(int profileId)
         {
@@ -460,28 +478,67 @@ namespace SVC_ORACLE
             }
         }
 
-        private void GitInit()
+        private void GitFetch(int profileId)
         {
-            string username = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-            username = username.Substring(username.IndexOf('\\') + 1); //remove domain name
+            var profile = new Config<string, string>(profiles[profileId] + ".profile");
 
-            git = new Config<string, string>("Git.config");
-            git["SshPublicPath"] = git["SshPublicPath"] ?? $@"C:\Users\{username}\.ssh\id_rsa.pub";
-            git["SshPrivatePath"] = git["SshPrivatePath"] ?? $@"C:\Users\{username}\.ssh\id_rsa";
-            git["SshPasshrase"] = git["SshPasshrase"] ?? "";
-            git["Name"] = git["Name"] ?? "Source Exporter";
-            git["Email"] = git["Email"] ?? "noreply@git.com";
-            git["GitServerUsername"] = git["GitServerUsername"] ?? "git";
-
-        }
-
-        private void btnPull_Click(object sender, EventArgs e)
-        {
-            int ind = cbProfiles.SelectedIndex;
-            if (ind >= 0)
+            using (var repo = new Repository(Repository.Discover(profile["Path"])))
             {
-                GitPullWithStash(ind);
+                try
+                {
+                    foreach (Remote remote in repo.Network.Remotes)
+                    {
+                        IEnumerable<string> refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
+                        var options = new FetchOptions()
+                        {
+                            CredentialsProvider = new CredentialsHandler(
+                            (url, usernameFromUrl, types) =>
+                                new SshUserKeyCredentials()
+                                {
+                                    Username = git["GitServerUsername"],
+                                    Passphrase = git["SshPasshrase"],
+                                    PublicKey = git["SshPublicPath"],
+                                    PrivateKey = git["SshPrivatePath"],
+                                }
+                            )
+                        };
+                        Commands.Fetch(repo, remote.Name, refSpecs, options, "");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(LogType.ERROR, ex, "Git fetch error");
+                }
             }
         }
+
+        private bool IsNeedPull(int profileId)
+        {
+            var profile = new Config<string, string>(profiles[profileId] + ".profile");
+            GitFetch(profileId);
+            string localRef = null;
+            string remoteRef = null;
+            using (var repo = new Repository(Repository.Discover(profile["Path"])))
+            {
+                foreach (var local in repo.Branches)
+                {
+                    if (local.IsCurrentRepositoryHead)
+                    {
+                        localRef = local.Reference.TargetIdentifier;
+                        foreach (var remote in repo.Branches)
+                        {
+                            if (remote.IsRemote && remote.FriendlyName == $"{local.RemoteName}/{local.FriendlyName}")
+                            {
+                                remoteRef = remote.Reference.TargetIdentifier;
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            return localRef != null && remoteRef != null && localRef != remoteRef;
+        }
+        #endregion
     }
 }
