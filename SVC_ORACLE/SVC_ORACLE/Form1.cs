@@ -439,7 +439,7 @@ namespace SVC_ORACLE
                 {
                     PullOptions options = new PullOptions();
                     var signature = new Signature(git["Name"], git["Email"], new DateTimeOffset(DateTime.Now));
-                    var stash = repo.Stashes.Add(signature, StashModifiers.IncludeUntracked);
+                    var stash = repo.Stashes.Add(signature, StashModifiers.IncludeUntracked | StashModifiers.KeepIndex);
 
                     options.FetchOptions = new FetchOptions()
                     {
