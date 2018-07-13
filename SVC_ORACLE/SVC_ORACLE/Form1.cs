@@ -473,7 +473,7 @@ namespace SVC_ORACLE
                 }
                 catch (Exception ex)
                 {
-                    Log.Write(LogType.ERROR, ex, "Git pull error");
+                    Log.Write(LogType.ERROR, ex, $"Git pull error, profile: {profiles[profileId]}");
                 }
             }
         }
@@ -507,7 +507,7 @@ namespace SVC_ORACLE
                 }
                 catch (Exception ex)
                 {
-                    Log.Write(LogType.ERROR, ex, "Git fetch error");
+                    Log.Write(LogType.ERROR, ex, $"Git fetch error, profile: {profiles[profileId]}");
                 }
             }
         }
