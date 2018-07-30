@@ -337,7 +337,13 @@ namespace SVC_ORACLE
         public int CreateDumps(string rootPath, string schemas, DateTime changedAfter, int profileId)
         {
             string schemaList = "'" + schemas.Replace(",", "', '") + "'";
+            int hostCheck = IsRemotePathReachable(rootPath);
+            if (hostCheck != 0)
+            {
+                throw new DirectoryNotFoundException($"Host is unreachable, profile {profiles[profileId]}, error code {hostCheck}");
+            }
             Directory.CreateDirectory(rootPath);
+
             string[] AllObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
             string[] ExecutingObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
 
