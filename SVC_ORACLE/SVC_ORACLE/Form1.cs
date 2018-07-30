@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Windows.Forms;
 using Utils;
@@ -381,6 +382,28 @@ namespace SVC_ORACLE
 
             }
             return profileId;
+        }
+
+        public int IsRemotePathReachable(string path)
+        {
+            try
+            {
+                string[] arr = path.Split(new char[] { '\\' }, 4);
+                if (arr.Length >= 3 && arr[0] == "" && arr[1] == "" && arr[2] != "") //remote address detection
+                {
+                    var reply = (new Ping()).Send(arr[2], 50);
+                    if (reply.Status != IPStatus.Success)
+                    {
+                        return (int)reply.Status;
+                    }
+                }
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(LogType.ERROR, ex, "Path check error");
+                return -2;
+            }
         }
 
         public string GetRoutineSource(string schema, string type, string name)
