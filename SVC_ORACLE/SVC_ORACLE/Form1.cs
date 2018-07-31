@@ -504,6 +504,14 @@ namespace SVC_ORACLE
                 {
                     Log.Write(LogType.ERROR, ex, $"Git pull error, profile: {profiles[profileId]}");
                 }
+                finally
+                {
+                    while(repo.Stashes.Count() > 0)
+                    {
+                        repo.Stashes.Pop(0);
+                        Log.Write(LogType.ABNORMAL, null, $"Git stash - emergency pop, profile: {profiles[profileId]}");
+                    }
+                }
             }
         }
 
