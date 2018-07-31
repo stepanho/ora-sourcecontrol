@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Windows.Forms;
 using Utils;
@@ -238,7 +239,7 @@ namespace SVC_ORACLE
                 }
                 else
                 {
-                    Log.Write(LogType.ABNORMAL, null, "Cannot start fast refresh due to process busy. Profile " + profiles[ind]);
+                    Log.Write(LogType.ABNORMAL, null, $"Cannot start fast refresh due to process busy. Profile: {profiles[ind]}, Blocking profile: {profiles[cbProfiles.SelectedIndex]}");
                 }
             }
 
@@ -257,7 +258,7 @@ namespace SVC_ORACLE
                 }
                 else
                 {
-                    Log.Write(LogType.ABNORMAL, null, "Cannot start full refresh due to process busy. Profile " + profiles[ind]);
+                    Log.Write(LogType.ABNORMAL, null, $"Cannot start full refresh due to process busy. Profile: {profiles[ind]}, Blocking profile: {profiles[cbProfiles.SelectedIndex]}");
                 }
             }
         }
@@ -273,7 +274,7 @@ namespace SVC_ORACLE
             }
             else
             {
-                Log.Write(LogType.ABNORMAL, null, "Timer cannot start job due to process busy. Profile " + profiles[profileId]);
+                Log.Write(LogType.ABNORMAL, null, $"Timer cannot start job due to process busy. Profile: {profiles[profileId]}, Blocking profile: {profiles[cbProfiles.SelectedIndex]}");
             }
         }
 
@@ -296,7 +297,7 @@ namespace SVC_ORACLE
                 param.Item2 ? new DateTime(1900, 1, 1) : dateForUpdate,
                 param.Item1
             );
-            profile["LastUpdate"] = now;
+            profile["LastUpdate"] = now ?? profile["LastUpdate"];
             if (IsNeedPull(param.Item1))
             {
                 GitPullWithStash(param.Item1);
@@ -336,7 +337,13 @@ namespace SVC_ORACLE
         public int CreateDumps(string rootPath, string schemas, DateTime changedAfter, int profileId)
         {
             string schemaList = "'" + schemas.Replace(",", "', '") + "'";
+            int hostCheck = IsRemotePathReachable(rootPath);
+            if (hostCheck != 0)
+            {
+                throw new DirectoryNotFoundException($"Host is unreachable, profile {profiles[profileId]}, error code {hostCheck}");
+            }
             Directory.CreateDirectory(rootPath);
+
             string[] AllObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
             string[] ExecutingObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
 
@@ -381,6 +388,28 @@ namespace SVC_ORACLE
 
             }
             return profileId;
+        }
+
+        public int IsRemotePathReachable(string path)
+        {
+            try
+            {
+                string[] arr = path.Split(new char[] { '\\' }, 4);
+                if (arr.Length >= 3 && arr[0] == "" && arr[1] == "" && arr[2] != "") //remote address detection
+                {
+                    var reply = (new Ping()).Send(arr[2], 50);
+                    if (reply.Status != IPStatus.Success)
+                    {
+                        return (int)reply.Status;
+                    }
+                }
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(LogType.ERROR, ex, "Path check error");
+                return -2;
+            }
         }
 
         public string GetRoutineSource(string schema, string type, string name)
@@ -439,7 +468,7 @@ namespace SVC_ORACLE
                 {
                     PullOptions options = new PullOptions();
                     var signature = new Signature(git["Name"], git["Email"], new DateTimeOffset(DateTime.Now));
-                    var stash = repo.Stashes.Add(signature, StashModifiers.IncludeUntracked);
+                    var stash = repo.Stashes.Add(signature, StashModifiers.IncludeUntracked | StashModifiers.KeepIndex);
 
                     options.FetchOptions = new FetchOptions()
                     {
@@ -473,7 +502,7 @@ namespace SVC_ORACLE
                 }
                 catch (Exception ex)
                 {
-                    Log.Write(LogType.ERROR, ex, "Git pull error");
+                    Log.Write(LogType.ERROR, ex, $"Git pull error, profile: {profiles[profileId]}");
                 }
             }
         }
@@ -507,7 +536,7 @@ namespace SVC_ORACLE
                 }
                 catch (Exception ex)
                 {
-                    Log.Write(LogType.ERROR, ex, "Git fetch error");
+                    Log.Write(LogType.ERROR, ex, $"Git fetch error, profile: {profiles[profileId]}");
                 }
             }
         }
