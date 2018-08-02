@@ -188,6 +188,18 @@ namespace SVC_ORACLE
             btnDelete.Enabled = enable;
             btnSave.Enabled = enable;
         }
+
+        private void PushNewWork(int profileId, bool isFull)
+        {
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate
+            {
+                are.WaitOne();
+                Invoke((System.Threading.ThreadStart)delegate
+                {
+                    bw.RunWorkerAsync(new Tuple<int, bool>(profileId, isFull));
+                });
+            });
+        }
         #endregion
 
         #region Event handlers
@@ -230,50 +242,24 @@ namespace SVC_ORACLE
         private void btnFastRefresh_Click(object sender, EventArgs e)
         {
             int ind = cbProfiles.SelectedIndex;
-
             if (ind >= 0)
             {
-                System.Threading.ThreadPool.QueueUserWorkItem(delegate
-                {
-                    are.WaitOne();
-                    Invoke((System.Threading.ThreadStart)delegate
-                    {
-                        bw.RunWorkerAsync(new Tuple<int, bool>(ind, false));
-                    });
-                });
+                PushNewWork(ind, false);
             }
-
         }
 
         private void btnFullRefresh_Click(object sender, EventArgs e)
         {
             int ind = cbProfiles.SelectedIndex;
-
             if (ind >= 0)
             {
-                System.Threading.ThreadPool.QueueUserWorkItem(delegate
-                {
-                    are.WaitOne();
-                    Invoke((System.Threading.ThreadStart)delegate
-                    {
-                        bw.RunWorkerAsync(new Tuple<int, bool>(ind, true));
-                    });
-                });
+                PushNewWork(ind, true);
             }
         }
 
         private void Tmr_Tick(object sender, EventArgs e)
         {
-            int profileId = (int)(sender as Timer).Tag;
-
-            System.Threading.ThreadPool.QueueUserWorkItem(delegate
-            {
-                are.WaitOne();
-                Invoke((System.Threading.ThreadStart)delegate
-                {
-                    bw.RunWorkerAsync(new Tuple<int, bool>(profileId, false));
-                });             
-            });
+            PushNewWork((int)(sender as Timer).Tag, false);
         }
 
         private void Bw_DoWork(object sender, DoWorkEventArgs e)
