@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Windows.Forms;
 using Utils;
@@ -16,6 +17,7 @@ namespace SVC_ORACLE
     {
         Dictionary<int, Timer> timers = new Dictionary<int, Timer>();
         BackgroundWorker bw;
+        System.Threading.AutoResetEvent are = new System.Threading.AutoResetEvent(true);
         Config<int, string> profiles;
         Config<string, string> git;
 
@@ -186,6 +188,18 @@ namespace SVC_ORACLE
             btnDelete.Enabled = enable;
             btnSave.Enabled = enable;
         }
+
+        private void PushNewWork(int profileId, bool isFull)
+        {
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate
+            {
+                are.WaitOne();
+                Invoke((System.Threading.ThreadStart)delegate
+                {
+                    bw.RunWorkerAsync(new Tuple<int, bool>(profileId, isFull));
+                });
+            });
+        }
         #endregion
 
         #region Event handlers
@@ -228,53 +242,24 @@ namespace SVC_ORACLE
         private void btnFastRefresh_Click(object sender, EventArgs e)
         {
             int ind = cbProfiles.SelectedIndex;
-
             if (ind >= 0)
             {
-                if (!bw.IsBusy)
-                {
-                    SelectProfile(ind);
-                    bw.RunWorkerAsync(new Tuple<int, bool>(ind, false));
-                }
-                else
-                {
-                    Log.Write(LogType.ABNORMAL, null, $"Cannot start fast refresh due to process busy. Profile: {profiles[ind]}, Blocking profile: {profiles[cbProfiles.SelectedIndex]}");
-                }
+                PushNewWork(ind, false);
             }
-
         }
 
         private void btnFullRefresh_Click(object sender, EventArgs e)
         {
             int ind = cbProfiles.SelectedIndex;
-
             if (ind >= 0)
             {
-                if (!bw.IsBusy)
-                {
-                    SelectProfile(ind);
-                    bw.RunWorkerAsync(new Tuple<int, bool>(ind, true));
-                }
-                else
-                {
-                    Log.Write(LogType.ABNORMAL, null, $"Cannot start full refresh due to process busy. Profile: {profiles[ind]}, Blocking profile: {profiles[cbProfiles.SelectedIndex]}");
-                }
+                PushNewWork(ind, true);
             }
         }
 
         private void Tmr_Tick(object sender, EventArgs e)
         {
-            int profileId = (int)(sender as Timer).Tag;
-
-            if (!bw.IsBusy)
-            {
-                SelectProfile(profileId);
-                bw.RunWorkerAsync(new Tuple<int, bool>(profileId, false));
-            }
-            else
-            {
-                Log.Write(LogType.ABNORMAL, null, $"Timer cannot start job due to process busy. Profile: {profiles[profileId]}, Blocking profile: {profiles[cbProfiles.SelectedIndex]}");
-            }
+            PushNewWork((int)(sender as Timer).Tag, false);
         }
 
         private void Bw_DoWork(object sender, DoWorkEventArgs e)
@@ -284,6 +269,7 @@ namespace SVC_ORACLE
 
             Invoke((System.Threading.ThreadStart)delegate
             {
+                SelectProfile(param.Item1);
                 EnableAll(false);
             });
 
@@ -329,6 +315,8 @@ namespace SVC_ORACLE
             {
                 Log.Write(LogType.ERROR, e.Error, "Error during executing Bw_DoWork");
             }
+
+            are.Set();
         }
         #endregion
 
@@ -336,7 +324,13 @@ namespace SVC_ORACLE
         public int CreateDumps(string rootPath, string schemas, DateTime changedAfter, int profileId)
         {
             string schemaList = "'" + schemas.Replace(",", "', '") + "'";
+            int hostCheck = IsRemotePathReachable(rootPath);
+            if (hostCheck != 0)
+            {
+                throw new DirectoryNotFoundException($"Host is unreachable, profile {profiles[profileId]}, error code {hostCheck}");
+            }
             Directory.CreateDirectory(rootPath);
+
             string[] AllObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
             string[] ExecutingObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
 
@@ -381,6 +375,28 @@ namespace SVC_ORACLE
 
             }
             return profileId;
+        }
+
+        public int IsRemotePathReachable(string path)
+        {
+            try
+            {
+                string[] arr = path.Split(new char[] { '\\' }, 4);
+                if (arr.Length >= 3 && arr[0] == "" && arr[1] == "" && arr[2] != "") //remote address detection
+                {
+                    var reply = (new Ping()).Send(arr[2], 100);
+                    if (reply.Status != IPStatus.Success)
+                    {
+                        return (int)reply.Status;
+                    }
+                }
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(LogType.ERROR, ex, "Path check error");
+                return -2;
+            }
         }
 
         public string GetRoutineSource(string schema, string type, string name)
@@ -439,7 +455,7 @@ namespace SVC_ORACLE
                 {
                     PullOptions options = new PullOptions();
                     var signature = new Signature(git["Name"], git["Email"], new DateTimeOffset(DateTime.Now));
-                    var stash = repo.Stashes.Add(signature, StashModifiers.IncludeUntracked);
+                    var stash = repo.Stashes.Add(signature, StashModifiers.IncludeUntracked | StashModifiers.KeepIndex);
 
                     options.FetchOptions = new FetchOptions()
                     {
@@ -474,6 +490,14 @@ namespace SVC_ORACLE
                 catch (Exception ex)
                 {
                     Log.Write(LogType.ERROR, ex, $"Git pull error, profile: {profiles[profileId]}");
+                }
+                finally
+                {
+                    while(repo.Stashes.Count() > 0)
+                    {
+                        repo.Stashes.Pop(0);
+                        Log.Write(LogType.ABNORMAL, null, $"Git stash - emergency pop, profile: {profiles[profileId]}");
+                    }
                 }
             }
         }

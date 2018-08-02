@@ -15,6 +15,7 @@ namespace Utils
     /// </summary>
     public static class Log
     {
+        private static readonly object lck = new object();
         private static string path;
 
         /// <summary>
@@ -29,7 +30,7 @@ namespace Utils
             FileInfo log = new FileInfo(path);
             if (!(log.Directory.Exists))
                 Directory.CreateDirectory(log.DirectoryName);
-            lock ("lock")
+            lock (lck)
             {
                 using (StreamWriter w = File.AppendText(path))
                 {

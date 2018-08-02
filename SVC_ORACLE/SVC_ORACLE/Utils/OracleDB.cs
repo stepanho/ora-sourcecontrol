@@ -408,7 +408,7 @@ namespace Utils
         /// <summary>
         /// Get information as bool, is this response is 'good' or not.
         /// </summary>
-        public bool isGood
+        public bool IsGood
         {
             get
             {
@@ -436,8 +436,7 @@ namespace Utils
         /// </summary>
         public Response()
         {
-            goodResponses = new List<string>();
-            goodResponses.Add("Y");
+            goodResponses = new List<string> { "Y" };
         }
 
         /// <summary>
