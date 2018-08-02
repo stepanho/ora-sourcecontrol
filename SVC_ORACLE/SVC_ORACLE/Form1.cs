@@ -235,10 +235,9 @@ namespace SVC_ORACLE
             {
                 System.Threading.ThreadPool.QueueUserWorkItem(delegate
                 {
-                    SelectProfile(ind);
                     are.WaitOne();
                     Invoke((System.Threading.ThreadStart)delegate
-                {
+                    {
                         bw.RunWorkerAsync(new Tuple<int, bool>(ind, false));
                     });
                 });
@@ -254,10 +253,9 @@ namespace SVC_ORACLE
             {
                 System.Threading.ThreadPool.QueueUserWorkItem(delegate
                 {
-                    SelectProfile(ind);
                     are.WaitOne();
                     Invoke((System.Threading.ThreadStart)delegate
-                {
+                    {
                         bw.RunWorkerAsync(new Tuple<int, bool>(ind, true));
                     });
                 });
@@ -270,10 +268,9 @@ namespace SVC_ORACLE
 
             System.Threading.ThreadPool.QueueUserWorkItem(delegate
             {
-                SelectProfile(profileId);
                 are.WaitOne();
                 Invoke((System.Threading.ThreadStart)delegate
-            {
+                {
                     bw.RunWorkerAsync(new Tuple<int, bool>(profileId, false));
                 });             
             });
@@ -286,6 +283,7 @@ namespace SVC_ORACLE
 
             Invoke((System.Threading.ThreadStart)delegate
             {
+                SelectProfile(param.Item1);
                 EnableAll(false);
             });
 
