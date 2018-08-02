@@ -451,11 +451,19 @@ namespace SVC_ORACLE
 
             using (var repo = new Repository(Repository.Discover(profile["Path"])))
             {
+                PullOptions options;
+                Signature signature;
+                Stash stash = null;
                 try
                 {
-                    PullOptions options = new PullOptions();
-                    var signature = new Signature(git["Name"], git["Email"], new DateTimeOffset(DateTime.Now));
-                    var stash = repo.Stashes.Add(signature, StashModifiers.IncludeUntracked | StashModifiers.KeepIndex);
+                    options = new PullOptions();
+                    signature = new Signature(git["Name"], git["Email"], new DateTimeOffset(DateTime.Now));
+
+                    stash = repo.Stashes.Add(signature, StashModifiers.IncludeUntracked | StashModifiers.KeepIndex);
+                    if (stash != null)
+                    {
+                        Log.Write(LogType.NORMAL, null, $"Git stash added, profile: {profiles[profileId]}");
+                    }
 
                     options.FetchOptions = new FetchOptions()
                     {
@@ -481,11 +489,6 @@ namespace SVC_ORACLE
                     {
                         Log.Write(LogType.ABNORMAL, null, $"Git pull failed, result: {pullResult.Status}, profile: {profiles[profileId]}");
                     }
-
-                    if (stash != null)
-                    {
-                        var res3 = repo.Stashes.Pop(0);
-                    }
                 }
                 catch (Exception ex)
                 {
@@ -493,10 +496,14 @@ namespace SVC_ORACLE
                 }
                 finally
                 {
-                    while(repo.Stashes.Count() > 0)
+                    if (stash != null)
                     {
-                        repo.Stashes.Pop(0);
-                        Log.Write(LogType.ABNORMAL, null, $"Git stash - emergency pop, profile: {profiles[profileId]}");
+                        var res3 = repo.Stashes.Pop(0);
+                        Log.Write(LogType.NORMAL, null, $"Git stash pop proceeded with result {res3}, profile: {profiles[profileId]}");
+                        if (repo.Stashes.Count() > 0)
+                        {
+                            Log.Write(LogType.ABNORMAL, null, $"Git stash collection is not empty, profile: {profiles[profileId]}");
+                        }
                     }
                 }
             }
