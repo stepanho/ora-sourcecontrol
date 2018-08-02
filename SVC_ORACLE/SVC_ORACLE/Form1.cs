@@ -17,6 +17,7 @@ namespace SVC_ORACLE
     {
         Dictionary<int, Timer> timers = new Dictionary<int, Timer>();
         BackgroundWorker bw;
+        System.Threading.AutoResetEvent are = new System.Threading.AutoResetEvent(true);
         Config<int, string> profiles;
         Config<string, string> git;
 
@@ -232,15 +233,15 @@ namespace SVC_ORACLE
 
             if (ind >= 0)
             {
-                if (!bw.IsBusy)
+                System.Threading.ThreadPool.QueueUserWorkItem(delegate
                 {
                     SelectProfile(ind);
-                    bw.RunWorkerAsync(new Tuple<int, bool>(ind, false));
-                }
-                else
+                    are.WaitOne();
+                    Invoke((System.Threading.ThreadStart)delegate
                 {
-                    Log.Write(LogType.ABNORMAL, null, $"Cannot start fast refresh due to process busy. Profile: {profiles[ind]}, Blocking profile: {profiles[cbProfiles.SelectedIndex]}");
-                }
+                        bw.RunWorkerAsync(new Tuple<int, bool>(ind, false));
+                    });
+                });
             }
 
         }
@@ -251,15 +252,15 @@ namespace SVC_ORACLE
 
             if (ind >= 0)
             {
-                if (!bw.IsBusy)
+                System.Threading.ThreadPool.QueueUserWorkItem(delegate
                 {
                     SelectProfile(ind);
-                    bw.RunWorkerAsync(new Tuple<int, bool>(ind, true));
-                }
-                else
+                    are.WaitOne();
+                    Invoke((System.Threading.ThreadStart)delegate
                 {
-                    Log.Write(LogType.ABNORMAL, null, $"Cannot start full refresh due to process busy. Profile: {profiles[ind]}, Blocking profile: {profiles[cbProfiles.SelectedIndex]}");
-                }
+                        bw.RunWorkerAsync(new Tuple<int, bool>(ind, true));
+                    });
+                });
             }
         }
 
@@ -267,15 +268,15 @@ namespace SVC_ORACLE
         {
             int profileId = (int)(sender as Timer).Tag;
 
-            if (!bw.IsBusy)
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate
             {
                 SelectProfile(profileId);
-                bw.RunWorkerAsync(new Tuple<int, bool>(profileId, false));
-            }
-            else
+                are.WaitOne();
+                Invoke((System.Threading.ThreadStart)delegate
             {
-                Log.Write(LogType.ABNORMAL, null, $"Timer cannot start job due to process busy. Profile: {profiles[profileId]}, Blocking profile: {profiles[cbProfiles.SelectedIndex]}");
-            }
+                    bw.RunWorkerAsync(new Tuple<int, bool>(profileId, false));
+                });             
+            });
         }
 
         private void Bw_DoWork(object sender, DoWorkEventArgs e)
@@ -330,6 +331,8 @@ namespace SVC_ORACLE
             {
                 Log.Write(LogType.ERROR, e.Error, "Error during executing Bw_DoWork");
             }
+
+            are.Set();
         }
         #endregion
 
