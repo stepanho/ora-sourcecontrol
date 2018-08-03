@@ -21,8 +21,6 @@ namespace SVC_ORACLE
         Config<int, string> profiles;
         Config<string, string> git;
 
-        int profilesCount = 0;
-
         public Form1()
         {
             InitializeComponent();
@@ -45,19 +43,17 @@ namespace SVC_ORACLE
                 profiles = new Config<int, string>("Profiles.config");
                 GitInit();
 
-                int i = -1;
-                while (profiles[++i] != null)
+                foreach (var item in profiles)
                 {
-                    cbProfiles.Items.Add(profiles[i]);
-                    int timerValue = Convert.ToInt32((new Config<string, string>(profiles[i] + ".profile"))["AutoRefresh"]);
+                    cbProfiles.Items.Add(item.Value);
+                    int timerValue = Convert.ToInt32((new Config<string, string>(item.Value + ".profile"))["AutoRefresh"]);
                     if (timerValue > 0)
                     {
-                        var tmr = new Timer() { Enabled = true, Interval = timerValue * 1000, Tag = i };
+                        var tmr = new Timer() { Enabled = true, Interval = timerValue * 1000, Tag = item.Key };
                         tmr.Tick += Tmr_Tick;
-                        timers.Add(i, tmr);
+                        timers.Add(item.Key, tmr);
                     }
                 }
-                profilesCount = i;
 
                 txtHost.Text = "";
                 txtPort.Text = "";
@@ -98,15 +94,8 @@ namespace SVC_ORACLE
             int ind = cbProfiles.SelectedIndex;
             if (ind >= 0)
             {
-                (new Config<string, string>(profiles[ind] + ".profile")).RemoveFile(); ;
-                profiles[ind] = null;
-                --profilesCount;
-
-                for (int i = ind; i <= profilesCount; i++)
-                {
-                    profiles[i] = profiles[i + 1];
-                }
-
+                (new Config<string, string>(profiles[ind] + ".profile")).RemoveFile();
+                profiles.Remove(ind);
                 LoadProfiles();
             }
 
@@ -116,14 +105,7 @@ namespace SVC_ORACLE
         {
             try
             {
-                bool isNew = true;
-                for (int i = 0; i < profilesCount; i++)
-                {
-                    if (profiles[i] == cbProfiles.Text)
-                    {
-                        isNew = false;
-                    }
-                }
+                bool isNew = !profiles.Values.Contains(cbProfiles.Text);
 
                 if (fbPath.SelectedPath == "")
                 {
@@ -132,8 +114,8 @@ namespace SVC_ORACLE
                 }
 
                 if (isNew)
-                {
-                    profiles[profilesCount++] = cbProfiles.Text;
+                { 
+                    profiles[profiles.Count] = cbProfiles.Text;
                 }
                 var profile = new Config<string, string>(cbProfiles.Text + ".profile");
                 profile["Host"] = txtHost.Text.Trim();
