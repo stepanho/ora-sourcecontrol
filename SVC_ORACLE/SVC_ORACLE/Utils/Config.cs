@@ -3,6 +3,8 @@ using System.IO;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
+using System.Collections;
 
 namespace Utils
 {
@@ -13,7 +15,7 @@ namespace Utils
     /// </summary>
     /// <typeparam name="K">Key type. Do not use non-covertible-to-text types.</typeparam>
     /// <typeparam name="V">Value type. Do not use non-covertible-to-text types.</typeparam>
-    public class Config<K, V>
+    public class Config<K, V> : IDictionary<K, V>
     {
         /// <summary>
         /// Config data collection.
@@ -25,8 +27,7 @@ namespace Utils
         /// </summary>
         private string configName;
 
-        public string configDirPath { get; private set; } = Environment.CurrentDirectory + @"\Config\";
-
+        public string ConfigDirPath { get; private set; } = Environment.CurrentDirectory + @"\Config\";
 
         /// <summary>
         /// Gets or sets the config from/to file through XML Serialization.
@@ -38,7 +39,7 @@ namespace Utils
             {
                 try
                 {
-                    using (var fs = new FileStream(configDirPath + configName, FileMode.Open))
+                    using (var fs = new FileStream(ConfigDirPath + configName, FileMode.Open))
                     {
                         var xmlSer = new XmlSerializer(typeof(List<Pair<K, V>>));
                         return (List<Pair<K, V>>)xmlSer.Deserialize(fs);
@@ -53,9 +54,9 @@ namespace Utils
             {
                 try
                 {
-                    if (!Directory.Exists(configDirPath))
-                        Directory.CreateDirectory(configDirPath);
-                    using (var fs = new FileStream(configDirPath + configName, File.Exists(configDirPath + configName) ? FileMode.Truncate : FileMode.CreateNew))
+                    if (!Directory.Exists(ConfigDirPath))
+                        Directory.CreateDirectory(ConfigDirPath);
+                    using (var fs = new FileStream(ConfigDirPath + configName, File.Exists(ConfigDirPath + configName) ? FileMode.Truncate : FileMode.CreateNew))
                     {
                         var xmlSer = new XmlSerializer(typeof(List<Pair<K, V>>));
                         xmlSer.Serialize(fs, value);
@@ -68,6 +69,146 @@ namespace Utils
             }
         }
 
+        #region IDictionary implementation 
+        public int Count
+        {
+            get
+            {
+                return configData.Count;
+            }
+        }
+
+        public bool IsReadOnly
+        {
+            get
+            {
+                FileInfo file = new FileInfo(ConfigDirPath + configName);
+                return file.IsReadOnly;
+            }
+            set
+            {
+                FileInfo file = new FileInfo(ConfigDirPath + configName);
+                file.IsReadOnly = value;
+            }
+        }
+
+        public ICollection<K> Keys
+        {
+            get
+            {
+                return configData.Select(x => x.Key).ToList();
+            }
+        }
+
+        public ICollection<V> Values
+        {
+            get
+            {
+                return configData.Select(x => x.Value).ToList();
+            }
+        }
+
+        public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
+        {
+            foreach (var item in configData)
+            {
+                yield return new KeyValuePair<K, V>(item.Key, item.Value);
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public void Add(KeyValuePair<K, V> item)
+        {
+            if (!Contains(item))
+            {
+                configData.Add(new Pair<K, V>(item.Key, item.Value));
+                ConfigFromToFile = configData;
+            }
+        }
+
+        public void Clear()
+        {
+            configData.Clear();
+            ConfigFromToFile = configData;
+        }
+
+        public bool Contains(KeyValuePair<K, V> item)
+        {
+            foreach (var el in configData)
+            {
+                if (el.Key.Equals(item.Key) && el.Value.Equals(item.Value))
+                    return true;
+            }
+            return false;
+        }
+
+        public bool Remove(KeyValuePair<K, V> item)
+        {
+            for (int i = 0; i < configData.Count; i++)
+            {
+                if (configData[i].Key.Equals(item.Key) && configData[i].Value.Equals(item.Value))
+                {
+                    configData.RemoveAt(i);
+                    ConfigFromToFile = configData;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool ContainsKey(K key)
+        {
+            foreach (var el in configData)
+            {
+                if (el.Key.Equals(key))
+                    return true;
+            }
+            return false;
+        }
+
+        public void Add(K key, V value)
+        {
+            Add(new KeyValuePair<K, V>(key, value));
+        }
+
+        public bool Remove(K key)
+        {
+            for (int i = 0; i < configData.Count; i++)
+            {
+                if (configData[i].Key.Equals(key))
+                {
+                    configData.RemoveAt(i);
+                    ConfigFromToFile = configData;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool TryGetValue(K key, out V value)
+        {
+            foreach (var item in configData)
+            {
+                if (item.Key.Equals(key))
+                {
+                    value = item.Value;
+                    return true;
+                }
+            }
+            value = default(V);
+            return false;
+        }
+
+        public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        } 
+        #endregion
+
         public void Update()
         {
             configData = ConfigFromToFile;
@@ -75,7 +216,7 @@ namespace Utils
 
         public void RemoveFile()
         {
-            File.Delete(configDirPath + configName);
+            File.Delete(ConfigDirPath + configName);
         }
 
         /// <summary>
@@ -119,7 +260,7 @@ namespace Utils
         {
             configName = fileName;
             configData = ConfigFromToFile;
-            configDirPath = Environment.CurrentDirectory + @"\Config\";
+            ConfigDirPath = Environment.CurrentDirectory + @"\Config\";
         }
 
         /// <summary>

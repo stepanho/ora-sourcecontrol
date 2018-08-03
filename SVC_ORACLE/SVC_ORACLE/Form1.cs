@@ -17,10 +17,9 @@ namespace SVC_ORACLE
     {
         Dictionary<int, Timer> timers = new Dictionary<int, Timer>();
         BackgroundWorker bw;
+        System.Threading.AutoResetEvent are = new System.Threading.AutoResetEvent(true);
         Config<int, string> profiles;
         Config<string, string> git;
-
-        int profilesCount = 0;
 
         public Form1()
         {
@@ -44,19 +43,17 @@ namespace SVC_ORACLE
                 profiles = new Config<int, string>("Profiles.config");
                 GitInit();
 
-                int i = -1;
-                while (profiles[++i] != null)
+                foreach (var item in profiles)
                 {
-                    cbProfiles.Items.Add(profiles[i]);
-                    int timerValue = Convert.ToInt32((new Config<string, string>(profiles[i] + ".profile"))["AutoRefresh"]);
+                    cbProfiles.Items.Add(item.Value);
+                    int timerValue = Convert.ToInt32((new Config<string, string>(item.Value + ".profile"))["AutoRefresh"]);
                     if (timerValue > 0)
                     {
-                        var tmr = new Timer() { Enabled = true, Interval = timerValue * 1000, Tag = i };
+                        var tmr = new Timer() { Enabled = true, Interval = timerValue * 1000, Tag = item.Key };
                         tmr.Tick += Tmr_Tick;
-                        timers.Add(i, tmr);
+                        timers.Add(item.Key, tmr);
                     }
                 }
-                profilesCount = i;
 
                 txtHost.Text = "";
                 txtPort.Text = "";
@@ -97,15 +94,8 @@ namespace SVC_ORACLE
             int ind = cbProfiles.SelectedIndex;
             if (ind >= 0)
             {
-                (new Config<string, string>(profiles[ind] + ".profile")).RemoveFile(); ;
-                profiles[ind] = null;
-                --profilesCount;
-
-                for (int i = ind; i <= profilesCount; i++)
-                {
-                    profiles[i] = profiles[i + 1];
-                }
-
+                (new Config<string, string>(profiles[ind] + ".profile")).RemoveFile();
+                profiles.Remove(ind);
                 LoadProfiles();
             }
 
@@ -115,14 +105,7 @@ namespace SVC_ORACLE
         {
             try
             {
-                bool isNew = true;
-                for (int i = 0; i < profilesCount; i++)
-                {
-                    if (profiles[i] == cbProfiles.Text)
-                    {
-                        isNew = false;
-                    }
-                }
+                bool isNew = !profiles.Values.Contains(cbProfiles.Text);
 
                 if (fbPath.SelectedPath == "")
                 {
@@ -131,8 +114,8 @@ namespace SVC_ORACLE
                 }
 
                 if (isNew)
-                {
-                    profiles[profilesCount++] = cbProfiles.Text;
+                { 
+                    profiles[profiles.Count] = cbProfiles.Text;
                 }
                 var profile = new Config<string, string>(cbProfiles.Text + ".profile");
                 profile["Host"] = txtHost.Text.Trim();
@@ -187,6 +170,18 @@ namespace SVC_ORACLE
             btnDelete.Enabled = enable;
             btnSave.Enabled = enable;
         }
+
+        private void PushNewWork(int profileId, bool isFull)
+        {
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate
+            {
+                are.WaitOne();
+                Invoke((System.Threading.ThreadStart)delegate
+                {
+                    bw.RunWorkerAsync(new Tuple<int, bool>(profileId, isFull));
+                });
+            });
+        }
         #endregion
 
         #region Event handlers
@@ -229,53 +224,24 @@ namespace SVC_ORACLE
         private void btnFastRefresh_Click(object sender, EventArgs e)
         {
             int ind = cbProfiles.SelectedIndex;
-
             if (ind >= 0)
             {
-                if (!bw.IsBusy)
-                {
-                    SelectProfile(ind);
-                    bw.RunWorkerAsync(new Tuple<int, bool>(ind, false));
-                }
-                else
-                {
-                    Log.Write(LogType.ABNORMAL, null, $"Cannot start fast refresh due to process busy. Profile: {profiles[ind]}, Blocking profile: {profiles[cbProfiles.SelectedIndex]}");
-                }
+                PushNewWork(ind, false);
             }
-
         }
 
         private void btnFullRefresh_Click(object sender, EventArgs e)
         {
             int ind = cbProfiles.SelectedIndex;
-
             if (ind >= 0)
             {
-                if (!bw.IsBusy)
-                {
-                    SelectProfile(ind);
-                    bw.RunWorkerAsync(new Tuple<int, bool>(ind, true));
-                }
-                else
-                {
-                    Log.Write(LogType.ABNORMAL, null, $"Cannot start full refresh due to process busy. Profile: {profiles[ind]}, Blocking profile: {profiles[cbProfiles.SelectedIndex]}");
-                }
+                PushNewWork(ind, true);
             }
         }
 
         private void Tmr_Tick(object sender, EventArgs e)
         {
-            int profileId = (int)(sender as Timer).Tag;
-
-            if (!bw.IsBusy)
-            {
-                SelectProfile(profileId);
-                bw.RunWorkerAsync(new Tuple<int, bool>(profileId, false));
-            }
-            else
-            {
-                Log.Write(LogType.ABNORMAL, null, $"Timer cannot start job due to process busy. Profile: {profiles[profileId]}, Blocking profile: {profiles[cbProfiles.SelectedIndex]}");
-            }
+            PushNewWork((int)(sender as Timer).Tag, false);
         }
 
         private void Bw_DoWork(object sender, DoWorkEventArgs e)
@@ -285,6 +251,7 @@ namespace SVC_ORACLE
 
             Invoke((System.Threading.ThreadStart)delegate
             {
+                SelectProfile(param.Item1);
                 EnableAll(false);
             });
 
@@ -330,6 +297,8 @@ namespace SVC_ORACLE
             {
                 Log.Write(LogType.ERROR, e.Error, "Error during executing Bw_DoWork");
             }
+
+            are.Set();
         }
         #endregion
 
@@ -350,11 +319,11 @@ namespace SVC_ORACLE
             string sql = $@"
             SELECT OWNER, OBJECT_NAME, OBJECT_TYPE
 	        FROM SYS.ALL_OBJECTS
-	        WHERE LAST_DDL_TIME >= TO_DATE('{changedAfter.ToString("yyyyMMddHHmmss")}', 'YYYYMMDDHH24MISS')
+	        WHERE LAST_DDL_TIME >= :dt
 	            AND OWNER IN ({schemaList})
                 AND OBJECT_TYPE IN ({"'" + String.Join("', '", AllObjects) + "'"})
             ORDER BY 1, 2, 3 ";
-            var result = OracleDB.RequestQueue(sql);
+            var result = OracleDB.RequestQueue(sql, new Parameter("dt", changedAfter));
             var objectCount = result.Count / 3;
 
             if (objectCount > 0)
@@ -397,7 +366,7 @@ namespace SVC_ORACLE
                 string[] arr = path.Split(new char[] { '\\' }, 4);
                 if (arr.Length >= 3 && arr[0] == "" && arr[1] == "" && arr[2] != "") //remote address detection
                 {
-                    var reply = (new Ping()).Send(arr[2], 50);
+                    var reply = (new Ping()).Send(arr[2], 200);
                     if (reply.Status != IPStatus.Success)
                     {
                         return (int)reply.Status;
@@ -420,11 +389,16 @@ namespace SVC_ORACLE
             	ELSE TEXT END SRC
             FROM SYS.ALL_SOURCE A
             WHERE NOT EXISTS (SELECT 'X' FROM SYS.ALL_SOURCE WHERE A.OWNER = OWNER AND A.TYPE = TYPE AND A.NAME = NAME AND LINE = 1 AND INSTR(TEXT, 'wrapped') > 0)
-                AND OWNER = '{schema}'
-                AND NAME = '{name}'
-                AND TYPE = '{type}'
+                AND OWNER = :schema
+                AND NAME = :name
+                AND TYPE = :type
             ORDER BY OWNER, NAME, TYPE, LINE ";
-            var result = OracleDB.RequestQueue(sql);
+            var result = OracleDB.RequestQueue(
+                sql,
+                new Parameter("schema", schema),
+                new Parameter("name", name),
+                new Parameter("type", type)
+            );
 
             if (result == null || result.Count == 0)
             {
@@ -464,11 +438,19 @@ namespace SVC_ORACLE
 
             using (var repo = new Repository(Repository.Discover(profile["Path"])))
             {
+                PullOptions options;
+                Signature signature;
+                Stash stash = null;
                 try
                 {
-                    PullOptions options = new PullOptions();
-                    var signature = new Signature(git["Name"], git["Email"], new DateTimeOffset(DateTime.Now));
-                    var stash = repo.Stashes.Add(signature, StashModifiers.IncludeUntracked | StashModifiers.KeepIndex);
+                    options = new PullOptions();
+                    signature = new Signature(git["Name"], git["Email"], new DateTimeOffset(DateTime.Now));
+
+                    stash = repo.Stashes.Add(signature, StashModifiers.IncludeUntracked | StashModifiers.KeepIndex);
+                    if (stash != null)
+                    {
+                        Log.Write(LogType.NORMAL, null, $"Git stash added, profile: {profiles[profileId]}");
+                    }
 
                     options.FetchOptions = new FetchOptions()
                     {
@@ -494,15 +476,22 @@ namespace SVC_ORACLE
                     {
                         Log.Write(LogType.ABNORMAL, null, $"Git pull failed, result: {pullResult.Status}, profile: {profiles[profileId]}");
                     }
-
-                    if (stash != null)
-                    {
-                        var res3 = repo.Stashes.Pop(0);
-                    }
                 }
                 catch (Exception ex)
                 {
                     Log.Write(LogType.ERROR, ex, $"Git pull error, profile: {profiles[profileId]}");
+                }
+                finally
+                {
+                    if (stash != null)
+                    {
+                        var res3 = repo.Stashes.Pop(0);
+                        Log.Write(LogType.NORMAL, null, $"Git stash pop proceeded with result {res3}, profile: {profiles[profileId]}");
+                        if (repo.Stashes.Count() > 0)
+                        {
+                            Log.Write(LogType.ABNORMAL, null, $"Git stash collection is not empty, profile: {profiles[profileId]}");
+                        }
+                    }
                 }
             }
         }
@@ -515,22 +504,21 @@ namespace SVC_ORACLE
             {
                 try
                 {
+                    var options = new FetchOptions()
+                    {
+                        CredentialsProvider = new CredentialsHandler(
+                            (url, usernameFromUrl, types) => new SshUserKeyCredentials()
+                            {
+                                Username = git["GitServerUsername"],
+                                Passphrase = git["SshPasshrase"],
+                                PublicKey = git["SshPublicPath"],
+                                PrivateKey = git["SshPrivatePath"],
+                            }
+                        )
+                    };
                     foreach (Remote remote in repo.Network.Remotes)
                     {
-                        IEnumerable<string> refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
-                        var options = new FetchOptions()
-                        {
-                            CredentialsProvider = new CredentialsHandler(
-                            (url, usernameFromUrl, types) =>
-                                new SshUserKeyCredentials()
-                                {
-                                    Username = git["GitServerUsername"],
-                                    Passphrase = git["SshPasshrase"],
-                                    PublicKey = git["SshPublicPath"],
-                                    PrivateKey = git["SshPrivatePath"],
-                                }
-                            )
-                        };
+                        IEnumerable<string> refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);                       
                         Commands.Fetch(repo, remote.Name, refSpecs, options, "");
                     }
                 }

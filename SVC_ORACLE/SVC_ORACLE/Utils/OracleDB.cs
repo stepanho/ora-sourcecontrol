@@ -196,7 +196,7 @@ namespace Utils
         /// </summary>
         /// <param name="SQL">SQL query text</param>
         /// <returns>Resultset as queue of strings</returns>
-        public static Queue<string> RequestQueue(string SQL)
+        public static Queue<string> RequestQueue(string SQL, params Parameter[] parameters)
         {
             try
             {
@@ -206,6 +206,8 @@ namespace Utils
                     OracleCommand Command = myConn.CreateCommand();
                     myConn.Open();
                     Command.CommandText = SQL;
+                    foreach (Parameter item in parameters)
+                        Command.Parameters.Add(item.OracleParameter);
                     using (OracleDataReader Reader = Command.ExecuteReader())
                     {
                         while (Reader.Read())
@@ -408,7 +410,7 @@ namespace Utils
         /// <summary>
         /// Get information as bool, is this response is 'good' or not.
         /// </summary>
-        public bool isGood
+        public bool IsGood
         {
             get
             {
@@ -436,8 +438,7 @@ namespace Utils
         /// </summary>
         public Response()
         {
-            goodResponses = new List<string>();
-            goodResponses.Add("Y");
+            goodResponses = new List<string> { "Y" };
         }
 
         /// <summary>
@@ -503,7 +504,7 @@ namespace Utils
         /// <param name="parameterName">Parameter name</param>
         /// <param name="parameterValue">Parameter value</param>
         /// <param name="parameterDirection">Parameter direction specificator string: IN, OUT, IN/OUT, RETURN</param>
-        public Parameter(string parameterName, object parameterValue, string parameterDirection)
+        public Parameter(string parameterName, object parameterValue, string parameterDirection = "IN")
         {
             Name = parameterName;
             Value = parameterValue;
