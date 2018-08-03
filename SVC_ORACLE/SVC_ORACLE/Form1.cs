@@ -499,14 +499,10 @@ namespace SVC_ORACLE
             {
                 try
                 {
-                    foreach (Remote remote in repo.Network.Remotes)
-                    {
-                        IEnumerable<string> refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
                     var options = new FetchOptions()
                     {
                         CredentialsProvider = new CredentialsHandler(
-                            (url, usernameFromUrl, types) =>
-                                new SshUserKeyCredentials()
+                            (url, usernameFromUrl, types) => new SshUserKeyCredentials()
                             {
                                 Username = git["GitServerUsername"],
                                 Passphrase = git["SshPasshrase"],
@@ -515,6 +511,9 @@ namespace SVC_ORACLE
                             }
                         )
                     };
+                    foreach (Remote remote in repo.Network.Remotes)
+                    {
+                        IEnumerable<string> refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);                       
                         Commands.Fetch(repo, remote.Name, refSpecs, options, "");
                     }
                 }
