@@ -25,8 +25,7 @@ namespace Utils
         /// </summary>
         private string configName;
 
-        public string configDirPath { get; private set; } = Environment.CurrentDirectory + @"\Config\";
-
+        public string ConfigDirPath { get; private set; } = Environment.CurrentDirectory + @"\Config\";
 
         /// <summary>
         /// Gets or sets the config from/to file through XML Serialization.
@@ -38,7 +37,7 @@ namespace Utils
             {
                 try
                 {
-                    using (var fs = new FileStream(configDirPath + configName, FileMode.Open))
+                    using (var fs = new FileStream(ConfigDirPath + configName, FileMode.Open))
                     {
                         var xmlSer = new XmlSerializer(typeof(List<Pair<K, V>>));
                         return (List<Pair<K, V>>)xmlSer.Deserialize(fs);
@@ -53,9 +52,9 @@ namespace Utils
             {
                 try
                 {
-                    if (!Directory.Exists(configDirPath))
-                        Directory.CreateDirectory(configDirPath);
-                    using (var fs = new FileStream(configDirPath + configName, File.Exists(configDirPath + configName) ? FileMode.Truncate : FileMode.CreateNew))
+                    if (!Directory.Exists(ConfigDirPath))
+                        Directory.CreateDirectory(ConfigDirPath);
+                    using (var fs = new FileStream(ConfigDirPath + configName, File.Exists(ConfigDirPath + configName) ? FileMode.Truncate : FileMode.CreateNew))
                     {
                         var xmlSer = new XmlSerializer(typeof(List<Pair<K, V>>));
                         xmlSer.Serialize(fs, value);
@@ -75,7 +74,7 @@ namespace Utils
 
         public void RemoveFile()
         {
-            File.Delete(configDirPath + configName);
+            File.Delete(ConfigDirPath + configName);
         }
 
         /// <summary>
@@ -119,7 +118,7 @@ namespace Utils
         {
             configName = fileName;
             configData = ConfigFromToFile;
-            configDirPath = Environment.CurrentDirectory + @"\Config\";
+            ConfigDirPath = Environment.CurrentDirectory + @"\Config\";
         }
 
         /// <summary>
