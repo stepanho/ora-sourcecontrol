@@ -318,24 +318,9 @@ namespace SVC_ORACLE
 
             string sql = $@"
             SELECT OWNER, OBJECT_NAME, OBJECT_TYPE
-            FROM(
-                 SELECT B.NAME OWNER, A.NAME OBJECT_NAME, MTIME,
-                        DECODE(A.TYPE#, 0, 'NEXT OBJECT', 1, 'INDEX', 2, 'TABLE', 3, 'CLUSTER', 4, 'VIEW', 5, 'SYNONYM', 6, 'SEQUENCE',
-            			       7, 'PROCEDURE', 8, 'FUNCTION', 9, 'PACKAGE', 11, 'PACKAGE BODY', 12, 'TRIGGER', 13, 'TYPE', 14, 'TYPE BODY',
-                               19, 'TABLE PARTITION', 20, 'INDEX PARTITION', 21, 'LOB', 22, 'LIBRARY', 23, 'DIRECTORY', 24, 'QUEUE',
-                               28, 'JAVA SOURCE', 29, 'JAVA CLASS', 30, 'JAVA RESOURCE', 32, 'INDEXTYPE', 33, 'OPERATOR', 34, 'TABLE SUBPARTITION',
-                               35, 'INDEX SUBPARTITION', 40, 'LOB PARTITION', 41, 'LOB SUBPARTITION', 43, 'DIMENSION', 44, 'CONTEXT',
-                               46, 'RULE SET', 47, 'RESOURCE PLAN', 48, 'CONSUMER GROUP', 51, 'SUBSCRIPTION', 52, 'LOCATION', 55, 'XML SCHEMA',
-                               56, 'JAVA DATA', 57, 'SECURITY PROFILE', 59, 'RULE', 60, 'CAPTURE', 61, 'APPLY', 62, 'EVALUATION CONTEXT',
-                               66, 'JOB', 67, 'PROGRAM', 68, 'JOB CLASS', 69, 'WINDOW', 72, 'WINDOW GROUP', 74, 'SCHEDULE', 79, 'CHAIN',
-                               81, 'FILE GROUP', 'UNDEFINED') OBJECT_TYPE
-                  FROM SYS.OBJ$ A
-            
-                           JOIN SYS.USER$ B ON A.OWNER# = B.USER#
-                  WHERE B.TYPE# = 1
-            )
-            WHERE MTIME >= :dt
-            AND OWNER IN ({schemaList})
+	        FROM SYS.ALL_OBJECTS
+	        WHERE LAST_DDL_TIME >= :dt
+	            AND OWNER IN ({schemaList})
                 AND OBJECT_TYPE IN ({"'" + String.Join("', '", AllObjects) + "'"})
             ORDER BY 1, 2, 3 ";
             var result = OracleDB.RequestQueue(sql, new Parameter("dt", changedAfter));
