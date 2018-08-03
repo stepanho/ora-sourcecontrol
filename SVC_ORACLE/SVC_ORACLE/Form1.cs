@@ -366,7 +366,7 @@ namespace SVC_ORACLE
                 string[] arr = path.Split(new char[] { '\\' }, 4);
                 if (arr.Length >= 3 && arr[0] == "" && arr[1] == "" && arr[2] != "") //remote address detection
                 {
-                    var reply = (new Ping()).Send(arr[2], 100);
+                    var reply = (new Ping()).Send(arr[2], 200);
                     if (reply.Status != IPStatus.Success)
                     {
                         return (int)reply.Status;
@@ -499,22 +499,21 @@ namespace SVC_ORACLE
             {
                 try
                 {
+                    var options = new FetchOptions()
+                    {
+                        CredentialsProvider = new CredentialsHandler(
+                            (url, usernameFromUrl, types) => new SshUserKeyCredentials()
+                            {
+                                Username = git["GitServerUsername"],
+                                Passphrase = git["SshPasshrase"],
+                                PublicKey = git["SshPublicPath"],
+                                PrivateKey = git["SshPrivatePath"],
+                            }
+                        )
+                    };
                     foreach (Remote remote in repo.Network.Remotes)
                     {
-                        IEnumerable<string> refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
-                        var options = new FetchOptions()
-                        {
-                            CredentialsProvider = new CredentialsHandler(
-                            (url, usernameFromUrl, types) =>
-                                new SshUserKeyCredentials()
-                                {
-                                    Username = git["GitServerUsername"],
-                                    Passphrase = git["SshPasshrase"],
-                                    PublicKey = git["SshPublicPath"],
-                                    PrivateKey = git["SshPrivatePath"],
-                                }
-                            )
-                        };
+                        IEnumerable<string> refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);                       
                         Commands.Fetch(repo, remote.Name, refSpecs, options, "");
                     }
                 }
