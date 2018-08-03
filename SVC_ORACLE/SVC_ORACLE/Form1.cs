@@ -319,11 +319,11 @@ namespace SVC_ORACLE
             string sql = $@"
             SELECT OWNER, OBJECT_NAME, OBJECT_TYPE
 	        FROM SYS.ALL_OBJECTS
-	        WHERE LAST_DDL_TIME >= TO_DATE('{changedAfter.ToString("yyyyMMddHHmmss")}', 'YYYYMMDDHH24MISS')
+	        WHERE LAST_DDL_TIME >= :dt
 	            AND OWNER IN ({schemaList})
                 AND OBJECT_TYPE IN ({"'" + String.Join("', '", AllObjects) + "'"})
             ORDER BY 1, 2, 3 ";
-            var result = OracleDB.RequestQueue(sql);
+            var result = OracleDB.RequestQueue(sql, new Parameter("dt", changedAfter));
             var objectCount = result.Count / 3;
 
             if (objectCount > 0)
@@ -389,11 +389,16 @@ namespace SVC_ORACLE
             	ELSE TEXT END SRC
             FROM SYS.ALL_SOURCE A
             WHERE NOT EXISTS (SELECT 'X' FROM SYS.ALL_SOURCE WHERE A.OWNER = OWNER AND A.TYPE = TYPE AND A.NAME = NAME AND LINE = 1 AND INSTR(TEXT, 'wrapped') > 0)
-                AND OWNER = '{schema}'
-                AND NAME = '{name}'
-                AND TYPE = '{type}'
+                AND OWNER = :schema
+                AND NAME = :name
+                AND TYPE = :type
             ORDER BY OWNER, NAME, TYPE, LINE ";
-            var result = OracleDB.RequestQueue(sql);
+            var result = OracleDB.RequestQueue(
+                sql,
+                new Parameter("schema", schema),
+                new Parameter("name", name),
+                new Parameter("type", type)
+            );
 
             if (result == null || result.Count == 0)
             {
