@@ -69,7 +69,11 @@ namespace Utils
             }
         }
 
-        #region IDictionary implementation 
+        #region IDictionary implementation
+
+        /// <summary>
+        /// Gets the count of elements of configuration.
+        /// </summary>
         public int Count
         {
             get
@@ -78,6 +82,9 @@ namespace Utils
             }
         }
 
+        /// <summary>
+        /// Gets or sets read-only flag of configuration file.
+        /// </summary>
         public bool IsReadOnly
         {
             get
@@ -92,6 +99,9 @@ namespace Utils
             }
         }
 
+        /// <summary>
+        /// Represents the keys collection of configuration.
+        /// </summary>
         public ICollection<K> Keys
         {
             get
@@ -100,6 +110,9 @@ namespace Utils
             }
         }
 
+        /// <summary>
+        /// Represents the values collection of configuation.
+        /// </summary>
         public ICollection<V> Values
         {
             get
@@ -108,6 +121,10 @@ namespace Utils
             }
         }
 
+        /// <summary>
+        /// IEnumerable implementation. 
+        /// </summary>
+        /// <returns>Enumerator of key-value pair.</returns>
         public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
         {
             foreach (var item in configData)
@@ -116,26 +133,42 @@ namespace Utils
             }
         }
 
+        /// <summary>
+        /// IEnumerable implementation. 
+        /// </summary>
+        /// <returns>Enumerator.</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
 
+        /// <summary>
+        /// Add new element to configuration, if specified element key is not exists.
+        /// </summary>
+        /// <param name="item">New item.</param>
         public void Add(KeyValuePair<K, V> item)
         {
-            if (!Contains(item))
+            if (ContainsKey(item.Key))
             {
                 configData.Add(new Pair<K, V>(item.Key, item.Value));
                 ConfigFromToFile = configData;
             }
         }
 
+        /// <summary>
+        /// Removes all elements of configuration.
+        /// </summary>
         public void Clear()
         {
             configData.Clear();
             ConfigFromToFile = configData;
         }
 
+        /// <summary>
+        /// Determines whether specified element contains by configuration.
+        /// </summary>
+        /// <param name="item">Elements to search.</param>
+        /// <returns>True if exists, otherwise false.</returns>
         public bool Contains(KeyValuePair<K, V> item)
         {
             foreach (var el in configData)
@@ -146,6 +179,11 @@ namespace Utils
             return false;
         }
 
+        /// <summary>
+        /// Removes specified element from configuration.
+        /// </summary>
+        /// <param name="item">Element to remove (value-based comparsion).</param>
+        /// <returns>True on successful remove, otherwise false.</returns>
         public bool Remove(KeyValuePair<K, V> item)
         {
             for (int i = 0; i < configData.Count; i++)
@@ -160,6 +198,11 @@ namespace Utils
             return false;
         }
 
+        /// <summary>
+        /// Determines whether specified key contains by configuration.
+        /// </summary>
+        /// <param name="key">Element key to search.</param>
+        /// <returns>True if exists, otherwise false.</returns>
         public bool ContainsKey(K key)
         {
             foreach (var el in configData)
@@ -170,11 +213,21 @@ namespace Utils
             return false;
         }
 
+        /// <summary>
+        /// Add new element to configuration, if specified element key is not exists.
+        /// </summary>
+        /// <param name="key">Key of ney item.</param>
+        /// <param name="value">Value of new item.</param>
         public void Add(K key, V value)
         {
             Add(new KeyValuePair<K, V>(key, value));
         }
 
+        /// <summary>
+        /// Removes the element by specified key.
+        /// </summary>
+        /// <param name="key">Key of element to remove.</param>
+        /// <returns>>True on successful remove, otherwise false.</returns>
         public bool Remove(K key)
         {
             for (int i = 0; i < configData.Count; i++)
@@ -189,6 +242,12 @@ namespace Utils
             return false;
         }
 
+        /// <summary>
+        /// Gets the value by specified key.
+        /// </summary>
+        /// <param name="key">Element key to search.</param>
+        /// <param name="value">Result value. If value was not found - default value.</param>
+        /// <returns>True if found, otherwise false.</returns>
         public bool TryGetValue(K key, out V value)
         {
             foreach (var item in configData)
@@ -203,26 +262,37 @@ namespace Utils
             return false;
         }
 
+        /// <summary>
+        /// NOT IMPLEMENTED!
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="arrayIndex"></param>
         public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
         {
             throw new NotImplementedException();
         } 
         #endregion
 
+        /// <summary>
+        /// Read data from configuration file.
+        /// </summary>
         public void Update()
         {
             configData = ConfigFromToFile;
         }
 
+        /// <summary>
+        /// Remove current configuration file.
+        /// </summary>
         public void RemoveFile()
         {
             File.Delete(ConfigDirPath + configName);
         }
 
         /// <summary>
-        /// Gets or sets config parameter value. If already exists - rewrite, overwise add.
+        /// Gets or sets config parameter value. If already exists - rewrite, otherwise add.
         /// </summary>
-        /// <param name="Key">The unique key of config parameter.</param>
+        /// <param name="Key">The unique key of configuration element.</param>
         /// <returns>Config parameter value. If key is not found - returns null.</returns>
         public V this[K key]
         {
