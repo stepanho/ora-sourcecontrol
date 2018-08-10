@@ -348,13 +348,18 @@ namespace Utils
         /// </summary>
         /// <param name="SQL">SQL query text</param>
         /// <returns>Resultset as data table</returns>
-        public static DataTable RequestDataTable(string SQL)
+        public static DataTable RequestDataTable(string SQL, params Parameter[] parameters)
         {
             try
             {
                 using (OracleConnection myConn = new OracleConnection(ConnectionString))
                 {
-                    using (var da = new OracleDataAdapter(SQL, myConn))
+                    OracleCommand Command = myConn.CreateCommand();
+                    myConn.Open();
+                    Command.CommandText = SQL;
+                    foreach (Parameter item in parameters)
+                        Command.Parameters.Add(item.OracleParameter);
+                    using (var da = new OracleDataAdapter(Command))
                     {
                         DataTable dt = new DataTable();
                         da.Fill(dt);
