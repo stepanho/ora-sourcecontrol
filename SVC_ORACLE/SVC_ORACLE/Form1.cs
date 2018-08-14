@@ -161,7 +161,7 @@ namespace SVC_ORACLE
             txtUser.Text = profile["UserId"];
             txtPassword.Text = profile["Password"];
             fbPath.SelectedPath = profile["Path"];
-            txtUpdated.Text = DateTime.ParseExact(profile["LastUpdate"], "yyyyMMddHHmmss", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd HH:mm:ss");
+            txtUpdated.Text = DateTime.ParseExact(profile["LastUpdate"] ?? "19000101000000", "yyyyMMddHHmmss", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd HH:mm:ss");
             txtSchemas.Text = profile["Schemas"];
             numAutoRefresh.Value = Convert.ToDecimal(profile["AutoRefresh"]);
             pbStatus.Value = 0;
