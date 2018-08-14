@@ -95,7 +95,13 @@ namespace SVC_ORACLE
             if (ind >= 0)
             {
                 (new Config<string, string>(profiles[ind] + ".profile")).RemoveFile();
-                profiles.Remove(ind);
+                
+                for (int i = ind; i < profiles.Count - 1; i++)
+                {
+                    profiles[i] = profiles[i + 1];
+                }
+                profiles.Remove(profiles.Count - 1);
+
                 LoadProfiles();
             }
 
