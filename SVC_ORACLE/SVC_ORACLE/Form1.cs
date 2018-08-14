@@ -372,7 +372,7 @@ namespace SVC_ORACLE
                 string[] arr = path.Split(new char[] { '\\' }, 4);
                 if (arr.Length >= 3 && arr[0] == "" && arr[1] == "" && arr[2] != "") //remote address detection
                 {
-                    var reply = (new Ping()).Send(arr[2], 200);
+                    var reply = (new Ping()).Send(arr[2], 500);
                     if (reply.Status != IPStatus.Success)
                     {
                         return (int)reply.Status;
