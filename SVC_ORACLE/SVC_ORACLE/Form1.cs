@@ -539,28 +539,17 @@ namespace SVC_ORACLE
         {
             var profile = new Config<string, string>(profiles[profileId] + ".profile");
             GitFetch(profileId);
-            string localRef = null;
-            string remoteRef = null;
             using (var repo = new Repository(Repository.Discover(profile["Path"])))
             {
                 foreach (var local in repo.Branches)
                 {
                     if (local.IsCurrentRepositoryHead)
                     {
-                        localRef = local.Reference.TargetIdentifier;
-                        foreach (var remote in repo.Branches)
-                        {
-                            if (remote.IsRemote && remote.FriendlyName == $"{local.RemoteName}/{local.FriendlyName}")
-                            {
-                                remoteRef = remote.Reference.TargetIdentifier;
-                                break;
-                            }
-                        }
-                        break;
+                        return local.TrackingDetails.BehindBy > 0;
                     }
                 }
             }
-            return localRef != null && remoteRef != null && localRef != remoteRef;
+            return false;
         }
         #endregion
     }
