@@ -502,7 +502,7 @@ namespace SVC_ORACLE
             }
         }
 
-        private void GitFetch(int profileId)
+        private void GitFetch(int profileId, int attempt = 1)
         {
             using (var repo = GitRepository(profileId))
             {
@@ -525,6 +525,10 @@ namespace SVC_ORACLE
                         IEnumerable<string> refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);                       
                         Commands.Fetch(repo, remote.Name, refSpecs, options, "");
                     }
+                }
+                catch (LibGit2SharpException ex) when (ex.Message == "Failed to start SSH session: Unable to exchange encryption keys" && attempt < 3)
+                {
+                    GitFetch(profileId, ++attempt);
                 }
                 catch (Exception ex)
                 {
