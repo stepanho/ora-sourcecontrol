@@ -15,140 +15,14 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_3109E50D05A54B5BB0C3F7BB08F5CEC6"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_3170E545DE20450A8C1E4FB3A6757588"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_381F73252C44405FADB2433665DA2FA2"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_3FD3710002CD42CCAF5D3FE481CB7964"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_44C24E5B7F7B4AD59EB856EA62D4A744"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_6A697B74DB5645EBB606AF2971903100"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7AD3EA0873304A06A0499F1C89E55EBA"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_82CF70C1850E523F559A2A62E00963DF"
-        "OwnerKey" = "8:_9E045EA4C93949C59E09F0358B1B3678"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_8427D1FF7E2A4A13A569A771340E7EF1"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_84A7C4B454D242049321B937052C4F2D"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_8634145A79F34222935A4FB647EE9B10"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9E045EA4C93949C59E09F0358B1B3678"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CE57665543F84E11BF018F2D2BD64DC1"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_D5F925DD89DA4FD1A8C2E3AB0A583F6C"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_E66017721F414378909BBD192E007DCB"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_E760B298679123A307EA7DE84031318E"
-        "OwnerKey" = "8:_9E045EA4C93949C59E09F0358B1B3678"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_E84E11601FAC4D7B8EB0023B8DD68C94"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_EC8E85323A17B819C67D6075D9FFA7BD"
-        "OwnerKey" = "8:_9E045EA4C93949C59E09F0358B1B3678"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_FDA02811ADEE4AD3824727C8100B3C93"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_9E045EA4C93949C59E09F0358B1B3678"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_82CF70C1850E523F559A2A62E00963DF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_E760B298679123A307EA7DE84031318E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_EC8E85323A17B819C67D6075D9FFA7BD"
+        "OwnerKey" = "8:_704A1F0122C54661A3321AB9F64D3328"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -176,6 +50,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
             }
         }
         "Release"
@@ -238,385 +120,12 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3109E50D05A54B5BB0C3F7BB08F5CEC6"
-            {
-            "SourcePath" = "8:..\\SVC_ORACLE\\bin\\Release\\lib\\win32\\x86\\libssh2.dll"
-            "TargetName" = "8:libssh2.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_13C88BE5B6514015B540C046E37B148B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3170E545DE20450A8C1E4FB3A6757588"
-            {
-            "SourcePath" = "8:..\\SVC_ORACLE\\bin\\Release\\lib\\osx\\libgit2-ssh-baa87df.dylib"
-            "TargetName" = "8:libgit2-ssh-baa87df.dylib"
-            "Tag" = "8:"
-            "Folder" = "8:_B6C7D54CB90C48869C462605923833F5"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_381F73252C44405FADB2433665DA2FA2"
-            {
-            "SourcePath" = "8:..\\SVC_ORACLE\\bin\\Release\\lib\\win32\\x64\\libssh2.dll"
-            "TargetName" = "8:libssh2.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_964495F5056A41D38F2F2C6573CE5552"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3FD3710002CD42CCAF5D3FE481CB7964"
             {
             "SourcePath" = "8:..\\SVC_ORACLE\\export_database.ico"
             "TargetName" = "8:export_database.ico"
             "Tag" = "8:"
             "Folder" = "8:_6345A5CDC088471DB7823896459BECF2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_44C24E5B7F7B4AD59EB856EA62D4A744"
-            {
-            "SourcePath" = "8:..\\SVC_ORACLE\\bin\\Release\\lib\\win32\\x86\\zlib.dll"
-            "TargetName" = "8:zlib.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_13C88BE5B6514015B540C046E37B148B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6A697B74DB5645EBB606AF2971903100"
-            {
-            "SourcePath" = "8:..\\SVC_ORACLE\\bin\\Release\\lib\\win32\\x64\\zlib.dll"
-            "TargetName" = "8:zlib.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_964495F5056A41D38F2F2C6573CE5552"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7AD3EA0873304A06A0499F1C89E55EBA"
-            {
-            "SourcePath" = "8:..\\SVC_ORACLE\\bin\\Release\\lib\\win32\\x86\\libssh2.pdb"
-            "TargetName" = "8:libssh2.pdb"
-            "Tag" = "8:"
-            "Folder" = "8:_13C88BE5B6514015B540C046E37B148B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_82CF70C1850E523F559A2A62E00963DF"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Oracle.ManagedDataAccess, Version=4.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_82CF70C1850E523F559A2A62E00963DF"
-                    {
-                    "Name" = "8:Oracle.ManagedDataAccess.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Oracle.ManagedDataAccess.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_6345A5CDC088471DB7823896459BECF2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8427D1FF7E2A4A13A569A771340E7EF1"
-            {
-            "SourcePath" = "8:..\\SVC_ORACLE\\bin\\Release\\lib\\win32\\x86\\git2-ssh-baa87df.pdb"
-            "TargetName" = "8:git2-ssh-baa87df.pdb"
-            "Tag" = "8:"
-            "Folder" = "8:_13C88BE5B6514015B540C046E37B148B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_84A7C4B454D242049321B937052C4F2D"
-            {
-            "SourcePath" = "8:..\\SVC_ORACLE\\bin\\Release\\lib\\win32\\x64\\git2-ssh-baa87df.dll"
-            "TargetName" = "8:git2-ssh-baa87df.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_964495F5056A41D38F2F2C6573CE5552"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8634145A79F34222935A4FB647EE9B10"
-            {
-            "SourcePath" = "8:..\\SVC_ORACLE\\bin\\Release\\lib\\win32\\x64\\libssh2.pdb"
-            "TargetName" = "8:libssh2.pdb"
-            "Tag" = "8:"
-            "Folder" = "8:_964495F5056A41D38F2F2C6573CE5552"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CE57665543F84E11BF018F2D2BD64DC1"
-            {
-            "SourcePath" = "8:..\\SVC_ORACLE\\bin\\Release\\lib\\win32\\x86\\git2-ssh-baa87df.dll"
-            "TargetName" = "8:git2-ssh-baa87df.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_13C88BE5B6514015B540C046E37B148B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D5F925DD89DA4FD1A8C2E3AB0A583F6C"
-            {
-            "SourcePath" = "8:..\\SVC_ORACLE\\bin\\Release\\lib\\linux\\x86_64\\libgit2-ssh-baa87df.so"
-            "TargetName" = "8:libgit2-ssh-baa87df.so"
-            "Tag" = "8:"
-            "Folder" = "8:_34EA402453B14EE68C418CBC004173B7"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E66017721F414378909BBD192E007DCB"
-            {
-            "SourcePath" = "8:..\\SVC_ORACLE\\bin\\Release\\lib\\win32\\x64\\git2-ssh-baa87df.pdb"
-            "TargetName" = "8:git2-ssh-baa87df.pdb"
-            "Tag" = "8:"
-            "Folder" = "8:_964495F5056A41D38F2F2C6573CE5552"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E760B298679123A307EA7DE84031318E"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:LibGit2Sharp, Version=1.0.22.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_E760B298679123A307EA7DE84031318E"
-                    {
-                    "Name" = "8:LibGit2Sharp.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:LibGit2Sharp.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_6345A5CDC088471DB7823896459BECF2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E84E11601FAC4D7B8EB0023B8DD68C94"
-            {
-            "SourcePath" = "8:..\\SVC_ORACLE\\bin\\Release\\lib\\win32\\x86\\zlib.pdb"
-            "TargetName" = "8:zlib.pdb"
-            "Tag" = "8:"
-            "Folder" = "8:_13C88BE5B6514015B540C046E37B148B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_EC8E85323A17B819C67D6075D9FFA7BD"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-                "ScatterAssemblies"
-                {
-                    "_EC8E85323A17B819C67D6075D9FFA7BD"
-                    {
-                    "Name" = "8:System.Net.Http.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:System.Net.Http.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_6345A5CDC088471DB7823896459BECF2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FDA02811ADEE4AD3824727C8100B3C93"
-            {
-            "SourcePath" = "8:..\\SVC_ORACLE\\bin\\Release\\lib\\win32\\x64\\zlib.pdb"
-            "TargetName" = "8:zlib.pdb"
-            "Tag" = "8:"
-            "Folder" = "8:_964495F5056A41D38F2F2C6573CE5552"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -669,83 +178,6 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_1C73E122A0804856BCAFCE035EBF37EA"
-                    {
-                    "Name" = "8:lib"
-                    "AlwaysCreate" = "11:FALSE"
-                    "Condition" = "8:"
-                    "Transitive" = "11:FALSE"
-                    "Property" = "8:_96491F6855E642CE9F138C0D49AF5C61"
-                        "Folders"
-                        {
-                            "{9EF0B969-E518-4E46-987F-47570745A589}:_A5E997C76C984C3385B721570D810468"
-                            {
-                            "Name" = "8:linux"
-                            "AlwaysCreate" = "11:FALSE"
-                            "Condition" = "8:"
-                            "Transitive" = "11:FALSE"
-                            "Property" = "8:_59B8E19651854088AC01D83171422802"
-                                "Folders"
-                                {
-                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_34EA402453B14EE68C418CBC004173B7"
-                                    {
-                                    "Name" = "8:x86_64"
-                                    "AlwaysCreate" = "11:FALSE"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "Property" = "8:_67745B88B19E4C3BB357BE7FC1AAB209"
-                                        "Folders"
-                                        {
-                                        }
-                                    }
-                                }
-                            }
-                            "{9EF0B969-E518-4E46-987F-47570745A589}:_AB1003EFBD8C4987BBDCF97E6B275239"
-                            {
-                            "Name" = "8:win32"
-                            "AlwaysCreate" = "11:FALSE"
-                            "Condition" = "8:"
-                            "Transitive" = "11:FALSE"
-                            "Property" = "8:_A1BF851C3653446881CB3B264D60E49E"
-                                "Folders"
-                                {
-                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_13C88BE5B6514015B540C046E37B148B"
-                                    {
-                                    "Name" = "8:x86"
-                                    "AlwaysCreate" = "11:FALSE"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "Property" = "8:_D29D6A9672AA43ABA2E90EEBCEB31F19"
-                                        "Folders"
-                                        {
-                                        }
-                                    }
-                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_964495F5056A41D38F2F2C6573CE5552"
-                                    {
-                                    "Name" = "8:x64"
-                                    "AlwaysCreate" = "11:FALSE"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "Property" = "8:_8CA981E890DD4516A5E3CA701D3A08D7"
-                                        "Folders"
-                                        {
-                                        }
-                                    }
-                                }
-                            }
-                            "{9EF0B969-E518-4E46-987F-47570745A589}:_B6C7D54CB90C48869C462605923833F5"
-                            {
-                            "Name" = "8:osx"
-                            "AlwaysCreate" = "11:FALSE"
-                            "Condition" = "8:"
-                            "Transitive" = "11:FALSE"
-                            "Property" = "8:_05802FBC6E4E4589846E3547EF58EFA7"
-                                "Folders"
-                                {
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -764,15 +196,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Oracle source exporter"
-        "ProductCode" = "8:{9A90B11E-5DD4-4C1C-9B17-97E24A259FD4}"
-        "PackageCode" = "8:{9104715F-372C-4D31-8591-80EC0E9B72C8}"
+        "ProductCode" = "8:{80C0902D-970F-4EB6-83C3-AFB83CE966CA}"
+        "PackageCode" = "8:{6C57F2D2-22A3-48CC-835A-BC8B28F765B3}"
         "UpgradeCode" = "8:{3362CCA1-1B03-4677-9CAB-BF7EBAB23D2D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.1"
+        "ProductVersion" = "8:1.0.2"
         "Manufacturer" = "8:GLOVISRUS"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -893,7 +325,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_9E045EA4C93949C59E09F0358B1B3678"
+            "Target" = "8:"
             "Folder" = "8:_5C282A2D5B18428CB876DBFC55A61B15"
             "WorkingFolder" = "8:_6345A5CDC088471DB7823896459BECF2"
             "Icon" = "8:_3FD3710002CD42CCAF5D3FE481CB7964"
@@ -1298,7 +730,7 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_9E045EA4C93949C59E09F0358B1B3678"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_704A1F0122C54661A3321AB9F64D3328"
             {
             "SourcePath" = "8:..\\SVC_ORACLE\\obj\\Release\\SVC_ORACLE.exe"
             "TargetName" = "8:"
