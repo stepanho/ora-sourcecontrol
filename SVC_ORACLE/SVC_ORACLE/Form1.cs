@@ -271,7 +271,7 @@ namespace SVC_ORACLE
                 param.Item1
             );
             profile["LastUpdate"] = now ?? profile["LastUpdate"];
-            if (IsNeedPull(param.Item1))
+            if (GitRepository(param.Item1) != null && IsNeedPull(param.Item1))
             {
                 GitPullWithStash(param.Item1);
             }
@@ -504,9 +504,7 @@ namespace SVC_ORACLE
 
         private void GitFetch(int profileId)
         {
-            var profile = new Config<string, string>(profiles[profileId] + ".profile");
-
-            using (var repo = new Repository(Repository.Discover(profile["Path"])))
+            using (var repo = GitRepository(profileId))
             {
                 try
                 {
@@ -537,9 +535,8 @@ namespace SVC_ORACLE
 
         private bool IsNeedPull(int profileId)
         {
-            var profile = new Config<string, string>(profiles[profileId] + ".profile");
             GitFetch(profileId);
-            using (var repo = new Repository(Repository.Discover(profile["Path"])))
+            using (var repo = GitRepository(profileId))
             {
                 foreach (var local in repo.Branches)
                 {
@@ -550,6 +547,24 @@ namespace SVC_ORACLE
                 }
             }
             return false;
+        }
+        
+        private Repository GitRepository(int profileId)
+        {
+            var profile = new Config<string, string>(profiles[profileId] + ".profile");
+            try
+            {
+                return new Repository(Repository.Discover(profile["Path"]));
+            }
+            catch (LibGit2SharpException)
+            {
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(LogType.ERROR, ex, $"Git repository check error, profile: {profiles[profileId]}");
+                return null;
+            }
         }
         #endregion
     }
