@@ -17,6 +17,8 @@ namespace SVC_ORACLE
     {
         Dictionary<int, Timer> timers = new Dictionary<int, Timer>();
         BackgroundWorker bw;
+        string[] AllObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
+        string[] ExecutingObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
         System.Threading.AutoResetEvent are = new System.Threading.AutoResetEvent(true);
         Config<int, string> profiles;
         Config<string, string> git;
@@ -323,15 +325,12 @@ namespace SVC_ORACLE
             }
             Directory.CreateDirectory(rootPath);
 
-            string[] AllObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
-            string[] ExecutingObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
-
             string sql = $@"
             SELECT OWNER, OBJECT_NAME, OBJECT_TYPE
 	        FROM SYS.ALL_OBJECTS
 	        WHERE LAST_DDL_TIME >= :dt
 	            AND OWNER IN ({schemaList})
-                AND OBJECT_TYPE IN ({"'" + String.Join("', '", AllObjects) + "'"})
+                AND OBJECT_TYPE IN ({"'" + string.Join("', '", AllObjects) + "'"})
             ORDER BY 1, 2, 3 ";
             var result = OracleDB.RequestQueue(sql, new Parameter("dt", changedAfter));
             var objectCount = result.Count / 3;
