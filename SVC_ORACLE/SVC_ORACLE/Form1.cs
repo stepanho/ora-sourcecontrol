@@ -95,7 +95,13 @@ namespace SVC_ORACLE
             if (ind >= 0)
             {
                 (new Config<string, string>(profiles[ind] + ".profile")).RemoveFile();
-                profiles.Remove(ind);
+                
+                for (int i = ind; i < profiles.Count - 1; i++)
+                {
+                    profiles[i] = profiles[i + 1];
+                }
+                profiles.Remove(profiles.Count - 1);
+
                 LoadProfiles();
             }
 
@@ -155,7 +161,7 @@ namespace SVC_ORACLE
             txtUser.Text = profile["UserId"];
             txtPassword.Text = profile["Password"];
             fbPath.SelectedPath = profile["Path"];
-            txtUpdated.Text = DateTime.ParseExact(profile["LastUpdate"], "yyyyMMddHHmmss", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd HH:mm:ss");
+            txtUpdated.Text = DateTime.ParseExact(profile["LastUpdate"] ?? "19000101000000", "yyyyMMddHHmmss", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd HH:mm:ss");
             txtSchemas.Text = profile["Schemas"];
             numAutoRefresh.Value = Convert.ToDecimal(profile["AutoRefresh"]);
             pbStatus.Value = 0;
@@ -265,7 +271,7 @@ namespace SVC_ORACLE
                 param.Item1
             );
             profile["LastUpdate"] = now ?? profile["LastUpdate"];
-            if (IsNeedPull(param.Item1))
+            if (GitRepository(param.Item1) != null && IsNeedPull(param.Item1))
             {
                 GitPullWithStash(param.Item1);
             }
@@ -366,7 +372,7 @@ namespace SVC_ORACLE
                 string[] arr = path.Split(new char[] { '\\' }, 4);
                 if (arr.Length >= 3 && arr[0] == "" && arr[1] == "" && arr[2] != "") //remote address detection
                 {
-                    var reply = (new Ping()).Send(arr[2], 200);
+                    var reply = (new Ping()).Send(arr[2], 1000);
                     if (reply.Status != IPStatus.Success)
                     {
                         return (int)reply.Status;
@@ -496,11 +502,9 @@ namespace SVC_ORACLE
             }
         }
 
-        private void GitFetch(int profileId)
+        private void GitFetch(int profileId, int attempt = 1)
         {
-            var profile = new Config<string, string>(profiles[profileId] + ".profile");
-
-            using (var repo = new Repository(Repository.Discover(profile["Path"])))
+            using (var repo = GitRepository(profileId))
             {
                 try
                 {
@@ -522,6 +526,10 @@ namespace SVC_ORACLE
                         Commands.Fetch(repo, remote.Name, refSpecs, options, "");
                     }
                 }
+                catch (LibGit2SharpException ex) when (ex.Message == "Failed to start SSH session: Unable to exchange encryption keys" && attempt < 3)
+                {
+                    GitFetch(profileId, ++attempt);
+                }
                 catch (Exception ex)
                 {
                     Log.Write(LogType.ERROR, ex, $"Git fetch error, profile: {profiles[profileId]}");
@@ -531,30 +539,36 @@ namespace SVC_ORACLE
 
         private bool IsNeedPull(int profileId)
         {
-            var profile = new Config<string, string>(profiles[profileId] + ".profile");
             GitFetch(profileId);
-            string localRef = null;
-            string remoteRef = null;
-            using (var repo = new Repository(Repository.Discover(profile["Path"])))
+            using (var repo = GitRepository(profileId))
             {
                 foreach (var local in repo.Branches)
                 {
                     if (local.IsCurrentRepositoryHead)
                     {
-                        localRef = local.Reference.TargetIdentifier;
-                        foreach (var remote in repo.Branches)
-                        {
-                            if (remote.IsRemote && remote.FriendlyName == $"{local.RemoteName}/{local.FriendlyName}")
-                            {
-                                remoteRef = remote.Reference.TargetIdentifier;
-                                break;
-                            }
-                        }
-                        break;
+                        return local.TrackingDetails.BehindBy > 0;
                     }
                 }
             }
-            return localRef != null && remoteRef != null && localRef != remoteRef;
+            return false;
+        }
+        
+        private Repository GitRepository(int profileId)
+        {
+            var profile = new Config<string, string>(profiles[profileId] + ".profile");
+            try
+            {
+                return new Repository(Repository.Discover(profile["Path"]));
+            }
+            catch (LibGit2SharpException)
+            {
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(LogType.ERROR, ex, $"Git repository check error, profile: {profiles[profileId]}");
+                return null;
+            }
         }
         #endregion
     }
