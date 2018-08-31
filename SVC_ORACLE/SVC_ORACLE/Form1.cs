@@ -1,4 +1,4 @@
-using LibGit2Sharp;
+﻿using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using System;
 using System.Collections.Generic;
@@ -265,10 +265,6 @@ namespace SVC_ORACLE
 
             DateTime dateForUpdate = DateTime.ParseExact(profile["LastUpdate"], "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
             string now = OracleDB.GetServerNow();
-            if (param.Item2)
-            {
-                new DirectoryInfo(profile["Path"]).Delete(true);
-            }
             e.Result = CreateDumps
             (
                 profile["Path"],
