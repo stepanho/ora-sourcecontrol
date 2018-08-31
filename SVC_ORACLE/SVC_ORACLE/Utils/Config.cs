@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Xml.Serialization;
 using System.Collections.Generic;
@@ -45,8 +45,9 @@ namespace Utils
                         return (List<Pair<K, V>>)xmlSer.Deserialize(fs);
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Log.Write(LogType.ERROR, ex, "Reading config error");
                     return new List<Pair<K, V>>();
                 }
             }
@@ -64,7 +65,7 @@ namespace Utils
                 }
                 catch (Exception ex)
                 {
-                    Log.Write(LogType.ERROR, ex, "Writing log error");
+                    Log.Write(LogType.ERROR, ex, "Writing config error");
                 }
             }
         }

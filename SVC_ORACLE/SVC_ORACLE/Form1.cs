@@ -1,4 +1,4 @@
-﻿using LibGit2Sharp;
+using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using System;
 using System.Collections.Generic;
@@ -440,7 +440,7 @@ namespace SVC_ORACLE
                 AND OBJECT_TYPE IN ({"'" + string.Join("', '", AllObjects) + "'"})
             ORDER BY OWNER, OBJECT_TYPE, OBJECT_NAME ";
 
-            var dbObjList = OracleDB.RequestQueue(sql).Select(o => $@"{rootPath}\{o}.sql").ToArray();
+            var dbObjList = OracleDB.RequestQueue(sql).Select(o => $@"{rootPath}\{o}.sql");
             var fileList = Directory.GetFiles(rootPath, "*.sql", SearchOption.AllDirectories);
 
             var resultList = fileList.Except(dbObjList).ToList();
