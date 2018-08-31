@@ -1,4 +1,4 @@
-using LibGit2Sharp;
+﻿using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using System;
 using System.Collections.Generic;
@@ -365,6 +365,9 @@ namespace SVC_ORACLE
                 bw.ReportProgress(profileId, new int[] { objectCount - result.Count / 3, objectCount });
 
             }
+
+            DeleteDroppedObjects(rootPath, schemas, profileId);
+
             return profileId;
         }
 
@@ -423,6 +426,31 @@ namespace SVC_ORACLE
                 }
                 return sb.ToString().Replace("\n", "\r\n").Replace("\0", "");
             }
+        }
+        
+        public int DeleteDroppedObjects(string rootPath, string schemas, int profileId)
+        {
+            string schemaList = "'" + schemas.Replace(",", "', '") + "'";
+
+            string sql = $@"
+            SELECT OWNER || '\'  || OBJECT_TYPE || '\' || OBJECT_NAME
+	        FROM SYS.ALL_OBJECTS
+	        WHERE 1=1
+	            AND OWNER IN ({schemaList})
+                AND OBJECT_TYPE IN ({"'" + string.Join("', '", AllObjects) + "'"})
+            ORDER BY OWNER, OBJECT_TYPE, OBJECT_NAME ";
+
+            var dbObjList = OracleDB.RequestQueue(sql).Select(o => $@"{rootPath}\{o}.sql").ToArray();
+            var fileList = Directory.GetFiles(rootPath, "*.sql", SearchOption.AllDirectories);
+
+            var resultList = fileList.Except(dbObjList).ToList();
+
+            foreach (var item in resultList)
+            {
+                File.Delete(item);
+            }
+
+            return profileId;
         }
         #endregion
 
