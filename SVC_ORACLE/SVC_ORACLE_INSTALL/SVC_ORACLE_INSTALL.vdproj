@@ -118,12 +118,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_EC8E85323A17B819C67D6075D9FFA7BD"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_86B6781CE6C3415C98398013ABF36EEA"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -137,6 +131,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_79B243B0F8ED4080B48CBDAABBFA9188"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_EC8E85323A17B819C67D6075D9FFA7BD"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -687,15 +687,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Oracle source exporter"
-        "ProductCode" = "8:{80C0902D-970F-4EB6-83C3-AFB83CE966CA}"
-        "PackageCode" = "8:{6C57F2D2-22A3-48CC-835A-BC8B28F765B3}"
+        "ProductCode" = "8:{94AA7482-765A-4095-9AEF-B49C3396D43F}"
+        "PackageCode" = "8:{49951DC7-0E5B-4C66-BCE1-AFDBB75F4267}"
         "UpgradeCode" = "8:{3362CCA1-1B03-4677-9CAB-BF7EBAB23D2D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
-        "RemovePreviousVersions" = "11:FALSE"
+        "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.2"
+        "ProductVersion" = "8:1.0.3"
         "Manufacturer" = "8:GLOVISRUS"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
