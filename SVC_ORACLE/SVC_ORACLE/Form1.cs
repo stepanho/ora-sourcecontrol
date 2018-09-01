@@ -17,6 +17,8 @@ namespace SVC_ORACLE
     {
         Dictionary<int, Timer> timers = new Dictionary<int, Timer>();
         BackgroundWorker bw;
+        string[] AllObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
+        string[] ExecutingObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
         System.Threading.AutoResetEvent are = new System.Threading.AutoResetEvent(true);
         Config<int, string> profiles;
         Config<string, string> git;
@@ -319,15 +321,12 @@ namespace SVC_ORACLE
             }
             Directory.CreateDirectory(rootPath);
 
-            string[] AllObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
-            string[] ExecutingObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
-
             string sql = $@"
             SELECT OWNER, OBJECT_NAME, OBJECT_TYPE
 	        FROM SYS.ALL_OBJECTS
 	        WHERE LAST_DDL_TIME >= :dt
 	            AND OWNER IN ({schemaList})
-                AND OBJECT_TYPE IN ({"'" + String.Join("', '", AllObjects) + "'"})
+                AND OBJECT_TYPE IN ({"'" + string.Join("', '", AllObjects) + "'"})
             ORDER BY 1, 2, 3 ";
             var result = OracleDB.RequestQueue(sql, new Parameter("dt", changedAfter));
             var objectCount = result.Count / 3;
@@ -362,6 +361,9 @@ namespace SVC_ORACLE
                 bw.ReportProgress(profileId, new int[] { objectCount - result.Count / 3, objectCount });
 
             }
+
+            DeleteDroppedObjects(rootPath, schemas, profileId);
+
             return profileId;
         }
 
@@ -420,6 +422,31 @@ namespace SVC_ORACLE
                 }
                 return sb.ToString().Replace("\n", "\r\n").Replace("\0", "");
             }
+        }
+        
+        public int DeleteDroppedObjects(string rootPath, string schemas, int profileId)
+        {
+            string schemaList = "'" + schemas.Replace(",", "', '") + "'";
+
+            string sql = $@"
+            SELECT OWNER || '\'  || OBJECT_TYPE || '\' || OBJECT_NAME
+	        FROM SYS.ALL_OBJECTS
+	        WHERE 1=1
+	            AND OWNER IN ({schemaList})
+                AND OBJECT_TYPE IN ({"'" + string.Join("', '", AllObjects) + "'"})
+            ORDER BY OWNER, OBJECT_TYPE, OBJECT_NAME ";
+
+            var dbObjList = OracleDB.RequestQueue(sql).Select(o => $@"{rootPath}\{o}.sql");
+            var fileList = Directory.GetFiles(rootPath, "*.sql", SearchOption.AllDirectories);
+
+            var resultList = fileList.Except(dbObjList).ToList();
+
+            foreach (var item in resultList)
+            {
+                File.Delete(item);
+            }
+
+            return profileId;
         }
         #endregion
 
