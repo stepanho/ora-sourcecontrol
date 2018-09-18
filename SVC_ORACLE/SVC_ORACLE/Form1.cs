@@ -1,4 +1,4 @@
-using LibGit2Sharp;
+﻿using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using System;
 using System.Collections.Generic;
@@ -177,14 +177,15 @@ namespace SVC_ORACLE
             btnSave.Enabled = enable;
         }
 
-        private void PushNewWork(int profileId, bool isFull)
+        private void PushNewWork(int profileId, bool isFull, DateTime execTime)
         {
             System.Threading.ThreadPool.QueueUserWorkItem(delegate
             {
+                (int ProfileId, bool IsFull, DateTime Timestamp) param = (profileId, isFull, execTime);
                 are.WaitOne();
                 Invoke((System.Threading.ThreadStart)delegate
                 {
-                    bw.RunWorkerAsync(new Tuple<int, bool>(profileId, isFull));
+                    bw.RunWorkerAsync(param);
                 });
             });
         }
@@ -232,7 +233,7 @@ namespace SVC_ORACLE
             int ind = cbProfiles.SelectedIndex;
             if (ind >= 0)
             {
-                PushNewWork(ind, false);
+                PushNewWork(ind, false, DateTime.Now);
             }
         }
 
@@ -241,39 +242,40 @@ namespace SVC_ORACLE
             int ind = cbProfiles.SelectedIndex;
             if (ind >= 0)
             {
-                PushNewWork(ind, true);
+                PushNewWork(ind, true, DateTime.Now);
             }
         }
 
         private void Tmr_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             int profileId = timers.Select(o => o).Where(o => o.Value == sender as System.Timers.Timer).Select(o => o.Key).ToArray()[0];
+            PushNewWork(profileId, false, e.SignalTime);
         }
 
         private void Bw_DoWork(object sender, DoWorkEventArgs e)
         {
-            var param = e.Argument as Tuple<int, bool>;
-            var profile = new Config<string, string>(profiles[param.Item1] + ".profile");
+            var param =  ((int ProfileId, bool IsFull, DateTime Timestamp))e.Argument;
+            var profile = new Config<string, string>(profiles[param.ProfileId] + ".profile");
 
             Invoke((System.Threading.ThreadStart)delegate
             {
-                SelectProfile(param.Item1);
+                SelectProfile(param.ProfileId);
                 EnableAll(false);
             });
 
             DateTime dateForUpdate = DateTime.ParseExact(profile["LastUpdate"], "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
-            string now = OracleDB.GetServerNow();
+            string now = param.Timestamp.ToString("yyyyMMddHHmmss");
             e.Result = CreateDumps
             (
                 profile["Path"],
                 profile["Schemas"],
-                param.Item2 ? new DateTime(1900, 1, 1) : dateForUpdate,
-                param.Item1
+                param.IsFull ? new DateTime(1900, 1, 1) : dateForUpdate,
+                param.ProfileId
             );
             profile["LastUpdate"] = now ?? profile["LastUpdate"];
-            if (GitRepository(param.Item1) != null && IsNeedPull(param.Item1))
+            if (GitRepository(param.ProfileId) != null && IsNeedPull(param.ProfileId))
             {
-                GitPullWithStash(param.Item1);
+                GitPullWithStash(param.ProfileId);
             }
         }
 
