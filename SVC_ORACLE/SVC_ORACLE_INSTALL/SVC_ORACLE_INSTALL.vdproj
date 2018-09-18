@@ -124,7 +124,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_82CF70C1850E523F559A2A62E00963DF"
+        "OwnerKey" = "8:_EC8E85323A17B819C67D6075D9FFA7BD"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -136,7 +136,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_EC8E85323A17B819C67D6075D9FFA7BD"
+        "OwnerKey" = "8:_82CF70C1850E523F559A2A62E00963DF"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -361,11 +361,6 @@
             "AssemblyAsmDisplayName" = "8:LibGit2Sharp, Version=1.0.22.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_79B243B0F8ED4080B48CBDAABBFA9188"
-                    {
-                    "Name" = "8:LibGit2Sharp.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:LibGit2Sharp.dll"
             "TargetName" = "8:"
@@ -392,11 +387,6 @@
             "AssemblyAsmDisplayName" = "8:Oracle.ManagedDataAccess, Version=4.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_82CF70C1850E523F559A2A62E00963DF"
-                    {
-                    "Name" = "8:Oracle.ManagedDataAccess.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Oracle.ManagedDataAccess.dll"
             "TargetName" = "8:"
@@ -563,11 +553,6 @@
             "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
-                    "_EC8E85323A17B819C67D6075D9FFA7BD"
-                    {
-                    "Name" = "8:System.Net.Http.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Net.Http.dll"
             "TargetName" = "8:"
@@ -687,15 +672,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Oracle source exporter"
-        "ProductCode" = "8:{94AA7482-765A-4095-9AEF-B49C3396D43F}"
-        "PackageCode" = "8:{49951DC7-0E5B-4C66-BCE1-AFDBB75F4267}"
+        "ProductCode" = "8:{8F922E76-444C-4DBC-ACE3-DCBC1EF50648}"
+        "PackageCode" = "8:{DF17E0EA-DBB5-479A-9A76-BCAED7F92C64}"
         "UpgradeCode" = "8:{3362CCA1-1B03-4677-9CAB-BF7EBAB23D2D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.3"
+        "ProductVersion" = "8:1.0.4"
         "Manufacturer" = "8:GLOVISRUS"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
