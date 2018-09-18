@@ -1,4 +1,4 @@
-﻿using LibGit2Sharp;
+using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace SVC_ORACLE
 {
     public partial class Form1 : Form
     {
-        Dictionary<int, Timer> timers = new Dictionary<int, Timer>();
+        Dictionary<int, System.Timers.Timer> timers = new Dictionary<int, System.Timers.Timer>();
         BackgroundWorker bw;
         string[] AllObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
         string[] ExecutingObjects = { "PROCEDURE", "FUNCTION", "PACKAGE", "PACKAGE BODY", "TRIGGER", "TYPE" };
@@ -34,11 +34,9 @@ namespace SVC_ORACLE
             try
             {
                 cbProfiles.DropDownStyle = ComboBoxStyle.DropDownList;
-                foreach (Timer item in timers.Values)
+                foreach (var item in timers.Values)
                 {
-                    item.Enabled = false;
-                    item.Tick -= Tmr_Tick;
-                    item.Dispose();
+                    item.Close();
                 }
                 cbProfiles.Items.Clear();
                 timers.Clear();
@@ -51,8 +49,8 @@ namespace SVC_ORACLE
                     int timerValue = Convert.ToInt32((new Config<string, string>(item.Value + ".profile"))["AutoRefresh"]);
                     if (timerValue > 0)
                     {
-                        var tmr = new Timer() { Enabled = true, Interval = timerValue * 1000, Tag = item.Key };
-                        tmr.Tick += Tmr_Tick;
+                        var tmr = new System.Timers.Timer() { Enabled = true, Interval = timerValue * 1000, AutoReset = true };
+                        tmr.Elapsed += Tmr_Elapsed;
                         timers.Add(item.Key, tmr);
                     }
                 }
@@ -247,9 +245,9 @@ namespace SVC_ORACLE
             }
         }
 
-        private void Tmr_Tick(object sender, EventArgs e)
+        private void Tmr_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            PushNewWork((int)(sender as Timer).Tag, false);
+            int profileId = timers.Select(o => o).Where(o => o.Value == sender as System.Timers.Timer).Select(o => o.Key).ToArray()[0];
         }
 
         private void Bw_DoWork(object sender, DoWorkEventArgs e)
